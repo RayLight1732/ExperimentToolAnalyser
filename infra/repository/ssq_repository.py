@@ -10,33 +10,15 @@ from typing import Optional
 from domain.error.ssq_not_found_error import SSQNotFoundError
 from infra.repository.internal.single_row_repository import SingleRowCsvRepository
 
-class SSQRepository(ISSQRepository):
-    def __init__(
-        self,
-        path_resolver: PathResolver,
-        file_system: FileSystem,
-    ):
-        self.path_resolver = path_resolver
-        self.file_system = file_system
 
+class SSQRepository(SingleRowCsvRepository[SSQ], ISSQRepository):
     def get_ssq(
         self,
         name: str,
         condition: Condition,
         time_point: TimePoint,
         timestamp: datetime,
-    ) -> SSQ:
-        path = self.path_resolver.ssq_path(
-            name, condition, time_point, timestamp
-        )
-
-        for row in self.file_system.load_csv(path):
-            return SSQCsv.from_csv_row(row).to_domain()
-        
-        raise SSQNotFoundError(path)
-
-class SSQRepository(SingleRowCsvRepository[SSQ], ISSQRepository):
-    def get_ssq(self, name:str, condition:Condition, time_point:TimePoint, timestamp:datetime):
+    ):
         path = self.path_resolver.ssq_path(name, condition, time_point, timestamp)
         return self._load_single_row(path)
 
