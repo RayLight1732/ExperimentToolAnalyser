@@ -1,26 +1,30 @@
 from domain.service.calculator import Calculator
 from domain.analysis.result.by_condition_pair import ByConditionPair
-from usecase.grouped_value import GroupedValue
+from domain.value_object.grouped_value import GroupedValue
 from domain.value_object.condition import Condition
-from typing import Tuple,Self
+from typing import Tuple, Self
 from itertools import combinations
 from scipy.stats import ttest_rel
-from statsmodels.stats.multitest import multipletests # type: ignore[import-untyped]
+from statsmodels.stats.multitest import multipletests  # type: ignore[import-untyped]
 import numpy as np
 from dataclasses import dataclass
+
 
 @dataclass(frozen=True)
 class CorrectedAndOriginalValue:
     @classmethod
-    def from_float(cls,corrected:float,original:float)->Self:
-        return cls(corrected,original)
-    corrected:float
-    original:float
+    def from_float(cls, corrected: float, original: float) -> Self:
+        return cls(corrected, original)
+
+    corrected: float
+    original: float
+
 
 CorrectedAndOriginalValueByConditionPair = ByConditionPair[CorrectedAndOriginalValue]
 
+
 class PairedTTestWithHolmCalculator(
-    Calculator[float,CorrectedAndOriginalValueByConditionPair]
+    Calculator[float, CorrectedAndOriginalValueByConditionPair]
 ):
     """
     GroupedValue[float] を受け取り、
@@ -29,8 +33,7 @@ class PairedTTestWithHolmCalculator(
     """
 
     def calculate(
-        self,
-        collected: GroupedValue[float]
+        self, collected: GroupedValue[float]
     ) -> CorrectedAndOriginalValueByConditionPair:
 
         conditions = list(collected.value.keys())
@@ -55,20 +58,20 @@ class PairedTTestWithHolmCalculator(
 
             _, p = ttest_rel(v1, v2)
 
-            assert isinstance(p,float)
+            assert isinstance(p, float)
             raw_pvalues.append(p)
             pairs.append((c1, c2))
 
         if not raw_pvalues:
             return CorrectedAndOriginalValueByConditionPair({})
         # Holm 法による補正
-        _, corrected_pvalues, _, _ = multipletests(
-            raw_pvalues,
-            alpha=0.05,
-            method="holm"
+        _, corrected_pvalues, _, _ = multipletests(  # type: ignore
+            raw_pvalues, alpha=0.05, method="holm"
         )
 
-        return CorrectedAndOriginalValueByConditionPair({
-            pair: CorrectedAndOriginalValue.from_float(float(p[0]),float(p[1]))
-            for pair, p in zip(pairs, zip(raw_pvalues,corrected_pvalues))
-        })
+        return CorrectedAndOriginalValueByConditionPair(
+            {
+                pair: CorrectedAndOriginalValue.from_float(float(p[0]), float(p[1]))
+                for pair, p in zip(pairs, zip(raw_pvalues, corrected_pvalues))  # type: ignore
+            }
+        )

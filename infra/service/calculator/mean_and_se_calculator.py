@@ -1,15 +1,14 @@
 import math
 from typing import Dict
 from domain.value_object.condition import Condition
-from usecase.grouped_value import GroupedValue
+from domain.value_object.grouped_value import GroupedValue
 from domain.service.calculator import Calculator
-from domain.analysis.result.mean_and_se import MeanAndSEByCondition,MeanAndSE
-class MeanAndSECalculator(Calculator[float,MeanAndSEByCondition]):
+from domain.analysis.result.mean_and_se import MeanAndSEByCondition, MeanAndSE
 
-    def calculate(
-        self,
-        collected: GroupedValue[float]
-    ) -> MeanAndSEByCondition:
+
+class MeanAndSECalculator(Calculator[float, MeanAndSEByCondition]):
+
+    def calculate(self, collected: GroupedValue[float]) -> MeanAndSEByCondition:
 
         result: Dict[Condition, MeanAndSE] = {}
 
@@ -30,6 +29,6 @@ class MeanAndSECalculator(Calculator[float,MeanAndSEByCondition]):
                 std_dev = math.sqrt(variance)
                 se = std_dev / math.sqrt(n)
 
-            result[condition] = MeanAndSE.from_float(mean,se)
+            result[condition] = MeanAndSE.from_float(mean, se)
 
         return MeanAndSEByCondition(result)

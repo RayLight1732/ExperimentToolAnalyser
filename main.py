@@ -1,27 +1,44 @@
 import sys
-from typing import Optional,Dict, List
-from bootstrap.wire import new_completed_subject_find_usecase,new_mean_peak_fms_calculate_usecase,new_peak_fms_anova_usecase,new_mean_and_se_fms_usecase, new_peak_fms_paired_t_test_with_holm_calculator
+from typing import Optional, Dict, List
+from bootstrap.wire import (
+    new_completed_subject_find_usecase,
+    new_mean_peak_fms_calculate_usecase,
+    new_peak_fms_anova_usecase,
+    new_mean_and_se_fms_usecase,
+    new_peak_fms_paired_t_test_with_holm_calculator,
+)
 from bootstrap.config import load_config
 from domain.value_object.condition import Condition
 from domain.analysis.result.mean_and_se import MeanAndSE
+from domain.entity.subject import Subject
 import matplotlib.pyplot as plt
-import japanize_matplotlib # type: ignore[import-untyped]
+import japanize_matplotlib  # type: ignore[import-untyped]
+from bootstrap.config import Config
 
-def mean_peak_fms(config,subjects):
+
+def mean_peak_fms(config: Config, subjects: List[Subject]):
     mean_peak_fms_calculate_usecase = new_mean_peak_fms_calculate_usecase(config)
 
-    for condition,value in mean_peak_fms_calculate_usecase.execute(subjects).values.items():
-        print(condition,value)
-    
-def peak_fms_anova(config,subjects):
+    for condition, value in mean_peak_fms_calculate_usecase.execute(
+        subjects
+    ).values.items():
+        print(condition, value)
+
+
+def peak_fms_anova(config: Config, subjects: List[Subject]):
     usecase = new_peak_fms_anova_usecase(config)
     print(usecase.execute(subjects))
 
-def peak_fms_paired_t_and_holm(config,subjects):
+
+def peak_fms_paired_t_and_holm(config: Config, subjects: List[Subject]):
     usecase = new_peak_fms_paired_t_test_with_holm_calculator(config)
     result = usecase.execute(subjects)
-    for condition_tuple,value in result.values.items():
-        print(condition_tuple[0].mode.display_name,condition_tuple[1].mode.display_name,value)
+    for condition_tuple, value in result.values.items():
+        print(
+            condition_tuple[0].mode.display_name,
+            condition_tuple[1].mode.display_name,
+            value,
+        )
 
 
 def plot_mean_and_se(
@@ -52,13 +69,7 @@ def plot_mean_and_se(
 
     # ---------- 描画 ----------
     plt.figure()
-    plt.errorbar(
-        x,
-        means,
-        yerr=ses,
-        fmt="o",
-        capsize=5
-    )
+    plt.errorbar(x, means, yerr=ses, fmt="o", capsize=5)
 
     plt.xticks(x, labels)
     plt.xlabel(xlabel)
@@ -73,22 +84,19 @@ def plot_mean_and_se(
     plt.tight_layout()
     plt.show()
 
-def mean_and_se_peak_fms(config,subjects):
-    usecase = new_mean_and_se_fms_usecase(config)
 
-    # for condition,value in usecase.execute(subjects).items():
-    #     print(condition,value)
-    plot_mean_and_se(usecase.execute(subjects))
-    
+def mean_and_se_peak_fms(config: Config, subjects: List[Subject]):
+    usecase = new_mean_and_se_fms_usecase(config)
+    plot_mean_and_se(usecase.execute(subjects).values)
+
 
 def main(config_path: Optional[str] = None) -> None:
-    config= load_config(config_path)
+    config = load_config(config_path)
     usecase = new_completed_subject_find_usecase(config)
     subjects = usecase.execute()
     for subject in subjects:
         print(subject.data.name)
-    peak_fms_paired_t_and_holm(config,subjects)
-
+    peak_fms_paired_t_and_holm(config, subjects)
 
 
 if __name__ == "__main__":
