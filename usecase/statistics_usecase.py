@@ -1,8 +1,6 @@
 from abc import ABC, abstractmethod
-from typing import List, Generic, Any
+from typing import List, Any
 from domain.entity.subject import Subject
-from domain.service.calculator import Calculator
-from domain.service.collector import Collector
 from usecase.service.operation_registory import (
     OperationRegistory,
     ValueType,
