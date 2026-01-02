@@ -12,6 +12,7 @@ class CalculationType(Enum):
     MEAN = "mean"
     MEAN_AND_SE = "mean_and_se"
     RM_ANOVA = "rm_anova"
+    PAIRED_T_TEST_WITH_HOLM = "paired_t_test_with_holm"
 
 
 class ValidOperations:

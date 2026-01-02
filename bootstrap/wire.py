@@ -64,6 +64,9 @@ def new_statistics_usecase(config: Config) -> StatisticsUsecaseInterface:
     calculators[CalculationType.MEAN] = MeanCalculator()
     calculators[CalculationType.MEAN_AND_SE] = MeanAndSECalculator()
     calculators[CalculationType.RM_ANOVA] = RMAnovaCalculator()
+    calculators[CalculationType.PAIRED_T_TEST_WITH_HOLM] = (
+        PairedTTestWithHolmCalculator()
+    )
 
     registory = new_operation_registory(config, collectors, calculators)
     return StatisticsUsecase(registory)

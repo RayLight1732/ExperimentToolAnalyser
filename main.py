@@ -10,6 +10,9 @@ import matplotlib.pyplot as plt
 from domain.analysis.result.mean_and_se import MeanAndSEByCondition
 import japanize_matplotlib  # type: ignore[import-untyped]
 from bootstrap.config import Config
+from usecase.service.calculator.paired_t_test_with_holm_calculator import (
+    CorrectedAndOriginalValueByConditionPair,
+)
 
 
 def plot_mean_and_se(
@@ -18,7 +21,7 @@ def plot_mean_and_se(
     condition_order: List[Condition] | None = None,
     title: str | None = None,
     ylabel: str = "値",
-    xlabel: str = "条件"
+    xlabel: str = "条件",
 ) -> None:
     """
     Conditionごとの平均値 ± 標準誤差をプロットする
@@ -63,12 +66,16 @@ def main(config_path: Optional[str] = None) -> None:
     for subject in subjects:
         print(subject.data.name)
     statistics_usecase = new_statistics_usecase(config)
-    result: MeanAndSEByCondition = statistics_usecase.execute(
+    result: CorrectedAndOriginalValueByConditionPair = statistics_usecase.execute(
         subjects,
         value_type=ValueType.FMS,
-        calculation_type=CalculationType.MEAN_AND_SE,
+        calculation_type=CalculationType.PAIRED_T_TEST_WITH_HOLM,
     )
-    plot_mean_and_se(result.values, title="FMS Mean and SE")
+    # plot_mean_and_se(result.values, title="FMS Mean and SE")
+    for condition_pair, corrected_and_original in result.values.items():
+        print(
+            f"{condition_pair[0].mode.display_name} {condition_pair[1].mode.display_name} corrected: {corrected_and_original.corrected}, original: {corrected_and_original.original}"
+        )
 
 
 if __name__ == "__main__":
