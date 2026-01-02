@@ -1,13 +1,18 @@
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict,Optional
-
+from typing import Any, Dict, Optional, List
+from usecase.service.operation_registory import (
+    CalculationType,
+    ValueType,
+    ValidOperations,
+)
 import yaml
 
 
 @dataclass(frozen=True)
 class Config:
     working_dir: str
+    valid_operations: ValidOperations = ValidOperations(value={})
 
 
 def load_config(path: Optional[str] = None) -> Config:
@@ -24,8 +29,24 @@ def load_config(path: Optional[str] = None) -> Config:
         raise ValueError("Invalid config format")
 
     try:
-        return Config(
-            working_dir=data["working_dir"],
-        )
+        working_dir = data["working_dir"]
+        valid_operations = _get_valid_operations(data["valid_operations"])
+        return Config(working_dir=working_dir, valid_operations=valid_operations)
     except KeyError as e:
         raise ValueError(f"Missing required config key: {e}") from e
+
+
+def _get_valid_operations(data: Any) -> ValidOperations:
+    if not isinstance(data, dict):
+        raise ValueError("Invalid valid_operations format")
+
+    value: Dict[ValueType, List[CalculationType]] = {}
+    for key, calc_list in data.items():
+        try:
+            value_type = ValueType(key)
+            calculations = [CalculationType(calc) for calc in calc_list]
+            value[value_type] = calculations
+        except ValueError as e:
+            raise ValueError(f"Invalid value type or calculation type: {e}") from e
+
+    return ValidOperations(value=value)

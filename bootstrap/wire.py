@@ -22,7 +22,15 @@ from usecase.service.calculator.paired_t_test_with_holm_calculator import (
 from usecase.service.collector.peak_fms_collector import PeakFMSCollector
 from usecase.statistics_usecase import StatisticsUsecaseInterface, StatisticsUsecase
 from domain.analysis.result.mean_and_se import MeanByCondition, MeanAndSEByCondition
+from domain.service.collector import Collector
+from domain.service.calculator import Calculator
 from infra.repository.ssq_repository import SSQRepository
+from usecase.service.operation_registory import (
+    new_operation_registory,
+    ValueType,
+    CalculationType,
+)
+from typing import Dict
 
 
 class AppContext:
@@ -44,59 +52,18 @@ def new_completed_subject_find_usecase(
     return CompletedSubjectFindUsecase(subject_repo)
 
 
-def new_mean_peak_fms_calculate_usecase(
-    config: Config,
-) -> StatisticsUsecaseInterface[MeanByCondition]:
-    calculator = MeanCalculator()
+def new_statistics_usecase(config: Config) -> StatisticsUsecaseInterface:
     path_resolver = PathResolver(config.working_dir)
     file_system = OSFileSystem()
     fms_repo = FMSRepository(path_resolver, file_system)
-    collector = PeakFMSCollector(fms_repo)
 
-    return StatisticsUsecase[MeanByCondition](collector, calculator)
+    collectors: Dict[ValueType, Collector] = {}
+    collectors[ValueType.FMS] = PeakFMSCollector(fms_repo)
 
+    calculators: Dict[CalculationType, Calculator] = {}
+    calculators[CalculationType.MEAN] = MeanCalculator()
+    calculators[CalculationType.MEAN_AND_SE] = MeanAndSECalculator()
+    calculators[CalculationType.RM_ANOVA] = RMAnovaCalculator()
 
-def new_peak_fms_anova_usecase(
-    config: Config,
-) -> StatisticsUsecaseInterface[AnovaResults]:
-    calculator = RMAnovaCalculator()
-    path_resolver = PathResolver(config.working_dir)
-    file_system = OSFileSystem()
-    fms_repo = FMSRepository(path_resolver, file_system)
-    collector = PeakFMSCollector(fms_repo)
-
-    return StatisticsUsecase[AnovaResults](collector, calculator)
-
-
-def new_mean_and_se_fms_usecase(
-    config: Config,
-) -> StatisticsUsecaseInterface[MeanAndSEByCondition]:
-    calculator = MeanAndSECalculator()
-    path_resolver = PathResolver(config.working_dir)
-    file_system = OSFileSystem()
-    fms_repo = FMSRepository(path_resolver, file_system)
-    collector = PeakFMSCollector(fms_repo)
-
-    return StatisticsUsecase[MeanAndSEByCondition](collector, calculator)
-
-
-def new_peak_fms_paired_t_test_with_holm_calculator(
-    config: Config,
-) -> StatisticsUsecaseInterface[CorrectedAndOriginalValueByConditionPair]:
-    calculator = PairedTTestWithHolmCalculator()
-    path_resolver = PathResolver(config.working_dir)
-    file_system = OSFileSystem()
-    fms_repo = FMSRepository(path_resolver, file_system)
-    collector = PeakFMSCollector(fms_repo)
-
-    return StatisticsUsecase[CorrectedAndOriginalValueByConditionPair](
-        collector, calculator
-    )
-
-
-def all_value_getter(config: Config):
-    calculator = PairedTTestWithHolmCalculator()
-    path_resolver = PathResolver(config.working_dir)
-    file_system = OSFileSystem()
-    fms_repo = FMSRepository(path_resolver, file_system)
-    collector = PeakFMSCollector(fms_repo)
+    registory = new_operation_registory(config, collectors, calculators)
+    return StatisticsUsecase(registory)

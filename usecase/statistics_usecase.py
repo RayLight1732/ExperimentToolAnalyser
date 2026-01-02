@@ -1,27 +1,39 @@
 from abc import ABC, abstractmethod
-from typing import List, Generic, TypeVar
+from typing import List, Generic, Any
 from domain.entity.subject import Subject
 from domain.service.calculator import Calculator
 from domain.service.collector import Collector
+from usecase.service.operation_registory import (
+    OperationRegistory,
+    ValueType,
+    CalculationType,
+)
 
-T = TypeVar("T")
 
-
-class StatisticsUsecaseInterface(ABC, Generic[T]):
+class StatisticsUsecaseInterface(ABC):
     @abstractmethod
-    def execute(self, subjects: List[Subject]) -> T:
+    def execute(
+        self,
+        subjects: List[Subject],
+        value_type: ValueType,
+        calculation_type: CalculationType,
+    ) -> Any:
         pass
 
 
-class StatisticsUsecase(Generic[T], StatisticsUsecaseInterface[T]):
+class StatisticsUsecase(StatisticsUsecaseInterface):
 
-    def __init__(self, collector: Collector, calculator: Calculator[T]):
-        self.collector = collector
-        self.calculator = calculator
+    def __init__(self, registory: OperationRegistory):
+        self.registory = registory
 
-    def execute(self, subjects: List[Subject]) -> T:
-        collected = self.collector.collect(subjects)
-        return self.calculator.calculate(collected)
+    def execute(
+        self,
+        subjects: List[Subject],
+        value_type: ValueType,
+        calculation_type: CalculationType,
+    ) -> Any:
+        operation = self.registory.get_operation(value_type, calculation_type)
+        return operation.execute(subjects)
 
 
 # class MassStatisticsUsecase(Generic[T,U],StatisticsUsecaseInterface[U]):
