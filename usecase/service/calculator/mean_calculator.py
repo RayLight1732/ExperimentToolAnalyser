@@ -6,7 +6,7 @@ from collections import defaultdict
 from domain.analysis.result.mean_and_se import MeanByCondition
 
 
-class MeanCalculator(Calculator[float, MeanByCondition]):
+class MeanCalculator(Calculator[MeanByCondition]):
     def calculate(self, collected: GroupedValue[float]) -> MeanByCondition:
         condition_value_dict: Dict[Condition, float] = defaultdict(lambda: 0)
         for condition, subject_data_map in collected.value.items():

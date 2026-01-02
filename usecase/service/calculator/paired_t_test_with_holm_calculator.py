@@ -24,7 +24,7 @@ CorrectedAndOriginalValueByConditionPair = ByConditionPair[CorrectedAndOriginalV
 
 
 class PairedTTestWithHolmCalculator(
-    Calculator[float, CorrectedAndOriginalValueByConditionPair]
+    Calculator[CorrectedAndOriginalValueByConditionPair]
 ):
     """
     GroupedValue[float] を受け取り、

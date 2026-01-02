@@ -10,7 +10,7 @@ from typing import List, Dict
 from collections import defaultdict
 
 
-class SSQDiffCollector(Collector[float]):
+class SSQDiffCollector(Collector):
     def __init__(self, ssq_repo: SSQRepository, value_type: SSQValueType):
         super().__init__()
         self.ssq_repo = ssq_repo

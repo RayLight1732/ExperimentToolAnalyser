@@ -5,7 +5,6 @@ from domain.service.calculator import Calculator
 from domain.service.collector import Collector
 
 T = TypeVar("T")
-U = TypeVar("U")
 
 
 class StatisticsUsecaseInterface(ABC, Generic[T]):
@@ -14,13 +13,13 @@ class StatisticsUsecaseInterface(ABC, Generic[T]):
         pass
 
 
-class StatisticsUsecase(Generic[T, U], StatisticsUsecaseInterface[U]):
+class StatisticsUsecase(Generic[T], StatisticsUsecaseInterface[T]):
 
-    def __init__(self, collector: Collector[T], calculator: Calculator[T, U]):
+    def __init__(self, collector: Collector, calculator: Calculator[T]):
         self.collector = collector
         self.calculator = calculator
 
-    def execute(self, subjects: List[Subject]) -> U:
+    def execute(self, subjects: List[Subject]) -> T:
         collected = self.collector.collect(subjects)
         return self.calculator.calculate(collected)
 

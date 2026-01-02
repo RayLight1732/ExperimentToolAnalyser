@@ -8,7 +8,7 @@ from typing import List, Dict
 from collections import defaultdict
 
 
-class PeakFMSCollector(Collector[float]):
+class PeakFMSCollector(Collector):
     def __init__(self, fms_repo: FMSRepository):
         super().__init__()
         self.fms_repo = fms_repo

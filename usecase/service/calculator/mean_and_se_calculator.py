@@ -6,7 +6,7 @@ from domain.service.calculator import Calculator
 from domain.analysis.result.mean_and_se import MeanAndSEByCondition, MeanAndSE
 
 
-class MeanAndSECalculator(Calculator[float, MeanAndSEByCondition]):
+class MeanAndSECalculator(Calculator[MeanAndSEByCondition]):
 
     def calculate(self, collected: GroupedValue[float]) -> MeanAndSEByCondition:
 

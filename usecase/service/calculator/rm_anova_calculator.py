@@ -7,7 +7,7 @@ from typing import List, Dict, Any
 
 
 # TODO 専用のoutputを作る
-class RMAnovaCalculator(Calculator[float, AnovaResults]):
+class RMAnovaCalculator(Calculator[AnovaResults]):
     def calculate(self, collected: GroupedValue[float]) -> AnovaResults:
         df = self._to_long_dataframe(collected)
 
