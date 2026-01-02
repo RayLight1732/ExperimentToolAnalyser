@@ -5,6 +5,8 @@ from typing import List
 
 
 class Collector(ABC):
+    # def calculate(self, collected: GroupedValue[LaveledValue]) -> T:
+    #     pass
     @abstractmethod
     def collect(self, subjects: List[Subject]) -> GroupedValue[float]:
         pass
