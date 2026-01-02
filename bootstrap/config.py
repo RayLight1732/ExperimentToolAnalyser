@@ -1,10 +1,10 @@
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, Optional, List
-from usecase.service.operation_registory import (
-    CalculationType,
-    ValueType,
+from typing import Any, Dict, Optional, Set
+from usecase.service.operation_contract import (
     ValidOperations,
+    ValueType,
+    CalculationType,
 )
 import yaml
 
@@ -12,7 +12,7 @@ import yaml
 @dataclass(frozen=True)
 class Config:
     working_dir: str
-    valid_operations: ValidOperations = ValidOperations(value={})
+    valid_operations: ValidOperations = ValidOperations({})
 
 
 def load_config(path: Optional[str] = None) -> Config:
@@ -40,13 +40,13 @@ def _get_valid_operations(data: Any) -> ValidOperations:
     if not isinstance(data, dict):
         raise ValueError("Invalid valid_operations format")
 
-    value: Dict[ValueType, List[CalculationType]] = {}
+    value: Dict[ValueType, Set[CalculationType]] = {}
     for key, calc_list in data.items():
         try:
             value_type = ValueType(key)
-            calculations = [CalculationType(calc) for calc in calc_list]
+            calculations = {CalculationType(calc) for calc in calc_list}
             value[value_type] = calculations
         except ValueError as e:
             raise ValueError(f"Invalid value type or calculation type: {e}") from e
 
-    return ValidOperations(value=value)
+    return ValidOperations(value)

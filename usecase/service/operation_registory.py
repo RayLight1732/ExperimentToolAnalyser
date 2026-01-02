@@ -1,26 +1,13 @@
 from domain.service.collector import Collector
 from domain.service.calculator import Calculator
 from domain.analysis.operation import Operation
-from typing import Dict, Any, List
-from dataclasses import dataclass
-from enum import Enum
+from typing import Dict, Any
 from bootstrap.config import Config
-
-
-class ValueType(Enum):
-    FMS = "fms"
-    SSQ = "ssq"
-
-
-class CalculationType(Enum):
-    MEAN = "mean"
-    MEAN_AND_SE = "mean_and_se"
-    RM_ANOVA = "rm_anova"
-
-
-@dataclass(frozen=True)
-class ValidOperations:
-    value: Dict[ValueType, List[CalculationType]]
+from usecase.service.operation_contract import (
+    ValueType,
+    CalculationType,
+    ValidOperations,
+)
 
 
 class OperationRegistory:
@@ -38,11 +25,7 @@ class OperationRegistory:
         self, value_type: ValueType, calculation_type: CalculationType
     ) -> Operation[Any]:
 
-        operations = ValidOperations.value.get(value_type)
-        if operations is None:
-            raise ValueError("Invalid operation : value type")
-        if calculation_type not in operations:
-            raise ValueError("Invalid operation : calculation type")
+        self.valid_operations.ensure_valid(value_type, calculation_type)
 
         collector = self.collectors.get(value_type)
         calculator = self.calculators.get(calculation_type)
