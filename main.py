@@ -5,12 +5,12 @@ from bootstrap.config import load_config
 from domain.value_object.condition import Condition
 from domain.analysis.result.mean_and_se import MeanAndSE
 from domain.entity.subject import Subject
-from usecase.service.operation_registory import ValueType, CalculationType
+from application.usecase.service.operation_registory import ValueType, CalculationType
 import matplotlib.pyplot as plt
 from domain.analysis.result.mean_and_se import MeanAndSEByCondition
 import japanize_matplotlib  # type: ignore[import-untyped]
 from bootstrap.config import Config
-from usecase.service.calculator.paired_t_test_with_holm_calculator import (
+from application.usecase.service.calculator.paired_t_test_with_holm_calculator import (
     CorrectedAndOriginalValueByConditionPair,
 )
 
