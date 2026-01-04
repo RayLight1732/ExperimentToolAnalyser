@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 from application.port.input.statistics_orchestrator_input_port import (
     StatisticsOrchestratorInputPort,
 )
@@ -7,6 +7,7 @@ from application.port.input.list_completed_subjects_input_port import (
 )
 from domain.entity.subject import Subject
 from application.dto.value_type import ValueType
+from application.dto.filter_parameter import FilterParameter
 
 
 class StatisticsController:
@@ -23,11 +24,19 @@ class StatisticsController:
     def list_completed_subjects(self) -> List[Subject]:
         return self.list_completed_subjects_usecase.execute()
 
-    def calculate_mean_and_se(self, value_types: List[ValueType]) -> None:
-        self.mean_and_se_orchestrator.execute(value_types)
+    def calculate_mean_and_se(
+        self,
+        value_types: List[ValueType],
+        filter_parameter: Optional[FilterParameter] = None,
+    ) -> None:
+        self.mean_and_se_orchestrator.execute(value_types, filter_parameter)
 
-    def run_paired_t_test_with_holm(self, value_types: List[ValueType]) -> None:
-        self.paired_t_test_orchestrator.execute(value_types)
+    def run_paired_t_test_with_holm(
+        self,
+        value_types: List[ValueType],
+        filter_parameter: Optional[FilterParameter] = None,
+    ) -> None:
+        self.paired_t_test_orchestrator.execute(value_types, filter_parameter)
 
     # def run_rm_anova(self, value_types: List[ValueType]) -> None:
     #     self.rm_anova_orchestrator.execute(value_types)

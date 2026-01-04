@@ -9,6 +9,8 @@ from presentation.presenter.collect_value_presenter import CollectValuePresenter
 from presentation.presenter.mean_and_se_presenter import MeanAndSePresenter
 from presentation.presenter.paired_t_test_presenter import PairedTTestPresenter
 from application.dto.value_type import ValueType
+from application.dto.filter_parameter import FilterParameter
+from application.dto.filter_type import FilterType
 
 
 def main(config_path: Optional[str] = None) -> None:

@@ -4,8 +4,9 @@ from application.port.input.statistics_orchestrator_input_port import (
 from application.port.input.statistics_usecase_input_port import (
     StatisticsUsecaseInputPort,
 )
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 from application.dto.value_type import ValueType
+from application.dto.filter_parameter import FilterParameter
 from application.port.input.list_completed_subjects_input_port import (
     ListCompletedSubjectInputPort,
 )
@@ -29,10 +30,13 @@ class StatisticsOrchestrator(StatisticsOrchestratorInputPort):
     def execute(
         self,
         value_types: List[ValueType],
+        filter_parameter: Optional[FilterParameter] = None,
     ) -> None:
         subjects = self.list_completed_subjects_usecase.execute()
 
         results: Dict[ValueType, Any] = {}
         for value_type in value_types:
-            values = self.collect_value_usecase.execute(subjects, value_type)
+            values = self.collect_value_usecase.execute(
+                subjects, value_type, filter_parameter
+            )
             results[value_type] = self.statistics_usecase.execute(value_type, values)
