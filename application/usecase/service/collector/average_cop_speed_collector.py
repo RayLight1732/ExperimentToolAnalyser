@@ -31,7 +31,7 @@ class AverageCOPSpeedCollector(Collector):
             for subject in subjects:
                 for session in subject.sessions:
                     body_sway = self.body_sway_repository.load(
-                        subject.data.name,
+                        subject.data,
                         session.condition,
                         session.result.body_sway_timestamp,
                     )

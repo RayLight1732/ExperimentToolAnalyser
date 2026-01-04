@@ -17,3 +17,7 @@ class CollectValuePresenter(CollectValueOutputPort):
 
     def on_complete(self, value_type: ValueType, result: GroupedValue[float]) -> None:
         print(f"Completed collection for {value_type.name}.")
+        if value_type == ValueType.AVERAGE_COP_SPEED:
+            for condition, values in result.value.items():
+                for subject, value in values.items():
+                    print(condition, subject.name, value)

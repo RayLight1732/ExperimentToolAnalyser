@@ -9,6 +9,8 @@ from datetime import datetime
 from domain.value_object.body_sway import BodySway, COP
 from typing import List
 from domain.error.body_sway_not_found_error import BodySwayNotFoundError
+from domain.error.body_sway_format_error import BodySwayFormatError
+from domain.value_object.subject_data import SubjectData
 
 
 class BodySwayRepository(IBodySwayRepository):
@@ -16,27 +18,46 @@ class BodySwayRepository(IBodySwayRepository):
         self.path_resolver = path_resolver
         self.file_system = file_system
 
-    def load(self, name: str, condition: Condition, timestamp: datetime):
+    def load(
+        self, subject_data: SubjectData, condition: Condition, timestamp: datetime
+    ):
         try:
-            path = self.path_resolver.body_sway_path(name, condition, timestamp)
+            path = self.path_resolver.body_sway_path(
+                subject_data.name, condition, timestamp
+            )
         except Exception as e:
-            # TODO: 詳細な例外を捕捉する
-            raise BodySwayNotFoundError(name) from e
+            raise BodySwayNotFoundError(subject_data, condition, timestamp) from e
 
         cop_points: List[COP] = []
 
         rows = self.file_system.load_csv(path)
+        rows_iter = iter(rows)
 
-        # 1行目（ヘッダ）を読み飛ばす
-        header_skipped = False
-        for row in rows:
-            if not header_skipped:
-                header_skipped = True
-                continue
+        # ヘッダをスキップ
+        try:
+            next(rows_iter)
+        except StopIteration:
+            return BodySway(cop_points=[])
 
-            time = float(row[0])
-            x = float(row[1])
-            y = float(row[2])
+        for row in rows_iter:
+            # 空行チェック
+            if not row or all(cell.strip() == "" for cell in row):
+                # ★ 次の行が存在するか確認
+                try:
+                    next(rows_iter)
+                except StopIteration:
+                    # 最後の行なので許可
+                    break
+                else:
+                    # 途中の空行は仕様違反
+                    raise BodySwayFormatError(subject_data, condition, timestamp)
+
+            try:
+                time = float(row[0])
+                x = float(row[1])
+                y = float(row[2])
+            except Exception as e:
+                raise BodySwayFormatError(subject_data, condition, timestamp) from e
 
             cop_points.append(
                 COP(
