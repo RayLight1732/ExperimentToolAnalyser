@@ -19,9 +19,11 @@ def test_body_sway_repository(mocker: MockerFixture) -> None:
         ["0.2", "2.0", "2.0"],
     ]
 
+    time = datetime(2024, 1, 1, 12, 0, 0)
+
     repo = BodySwayRepository(path_resolver_mock, file_system_mock)
     result = repo.load(
-        "subject1", Condition(CoolingMode.ALWAYS, Position.CAROTID), datetime.now()
+        "subject1", Condition(CoolingMode.ALWAYS, Position.CAROTID), time
     )
 
     expected = BodySway(
@@ -32,8 +34,8 @@ def test_body_sway_repository(mocker: MockerFixture) -> None:
         ]
     )
 
-    path_resolver_mock.body_sway_path.assert_called_once(
-        "subject1", Condition(CoolingMode.ALWAYS, Position.CAROTID)
+    path_resolver_mock.body_sway_path.assert_called_once_with(
+        "subject1", Condition(CoolingMode.ALWAYS, Position.CAROTID), time
     )
     file_system_mock.load_csv.assert_called_once_with("some/path/to/body_sway.csv")
     assert result == expected
