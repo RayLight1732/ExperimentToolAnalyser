@@ -2,13 +2,31 @@ import math
 from typing import Dict
 from domain.value_object.condition import Condition
 from domain.value_object.grouped_value import GroupedValue
-from domain.service.calculator import Calculator
 from domain.analysis.result.mean_and_se import MeanAndSEByCondition, MeanAndSE
+from application.port.input.statistics_usecase_input_port import (
+    StatisticsUsecaseInputPort,
+)
+from application.port.output.calculator.calculate_mean_and_se_output_port import (
+    CalculateMeanAndSEOutputPort,
+)
+from application.dto.value_type import ValueType
 
 
-class MeanAndSECalculator(Calculator[MeanAndSEByCondition]):
+class CalculateMeanAndSEUsecase(StatisticsUsecaseInputPort):
 
-    def calculate(self, collected: GroupedValue[float]) -> MeanAndSEByCondition:
+    def __init__(self, output_port: CalculateMeanAndSEOutputPort):
+        self.output_port = output_port
+
+    def execute(
+        self,
+        value_type: ValueType,
+        values: GroupedValue[float],
+    ) -> None:
+        self.output_port.on_start(value_type)
+        result = self._calculate(values)
+        self.output_port.on_complete(value_type, result)
+
+    def _calculate(self, collected: GroupedValue[float]) -> MeanAndSEByCondition:
 
         result: Dict[Condition, MeanAndSE] = {}
 

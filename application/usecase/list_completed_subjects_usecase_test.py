@@ -4,18 +4,20 @@ from unittest.mock import Mock
 import pytest
 from pytest_mock import MockerFixture
 
-from usecase.completed_subject_find_usecase import CompletedSubjectFindUsecase
-from domain.value_object.condition import CoolingMode, Position,Condition
+from application.usecase.list_completed_subjects_usecase import (
+    ListCompletedSubjectsUsecase,
+)
+from domain.value_object.condition import CoolingMode, Position, Condition
 
 
 @pytest.fixture
-def usecase(mocker: MockerFixture) -> CompletedSubjectFindUsecase:
+def usecase(mocker: MockerFixture) -> ListCompletedSubjectsUsecase:
     mock_repo: Mock = mocker.Mock()
-    return CompletedSubjectFindUsecase(mock_repo)
+    return ListCompletedSubjectsUsecase(mock_repo)
 
 
 def test_is_valid_subject_true(
-    usecase: CompletedSubjectFindUsecase,
+    usecase: ListCompletedSubjectsUsecase,
     mocker: MockerFixture,
 ) -> None:
     sessions = [
@@ -31,12 +33,12 @@ def test_is_valid_subject_true(
 
 
 def test_is_valid_subject_invalid_position(
-    usecase: CompletedSubjectFindUsecase,
+    usecase: ListCompletedSubjectsUsecase,
     mocker: MockerFixture,
 ) -> None:
     sessions: List[Mock] = [
         mocker.Mock(condition=Condition(CoolingMode.NONE)),
-        mocker.Mock(condition=Condition(CoolingMode.ALWAYS,Position.NECK)),
+        mocker.Mock(condition=Condition(CoolingMode.ALWAYS, Position.NECK)),
         mocker.Mock(condition=Condition(CoolingMode.PERIODIC, Position.CAROTID)),
         mocker.Mock(condition=Condition(CoolingMode.SICK_SCENE_ONLY, Position.CAROTID)),
     ]
@@ -47,12 +49,12 @@ def test_is_valid_subject_invalid_position(
 
 
 def test_is_valid_subject_missing_condition(
-    usecase: CompletedSubjectFindUsecase,
+    usecase: ListCompletedSubjectsUsecase,
     mocker: MockerFixture,
 ) -> None:
     sessions: List[Mock] = [
         mocker.Mock(condition=Condition(CoolingMode.NONE)),
-        mocker.Mock(condition=Condition(CoolingMode.ALWAYS,Position.CAROTID)),
+        mocker.Mock(condition=Condition(CoolingMode.ALWAYS, Position.CAROTID)),
     ]
 
     subject: Mock = mocker.Mock(sessions=sessions)
@@ -61,7 +63,7 @@ def test_is_valid_subject_missing_condition(
 
 
 def test_is_valid_subject_duplicate_condition(
-    usecase: CompletedSubjectFindUsecase,
+    usecase: ListCompletedSubjectsUsecase,
     mocker: MockerFixture,
 ) -> None:
     sessions: List[Mock] = [

@@ -2,16 +2,12 @@ from domain.repository.subject_repository import SubjectRepository
 from domain.entity.subject import Subject
 from typing import List, Set
 from domain.value_object.condition import CoolingMode, Position, Condition
-from abc import ABC, abstractmethod
+from application.port.input.list_completed_subjects_input_port import (
+    ListCompletedSubjectInputPort,
+)
 
 
-class CompletedSubjectFindUsecaseInterface(ABC):
-    @abstractmethod
-    def execute(self) -> List[Subject]:
-        pass
-
-
-class CompletedSubjectFindUsecase(CompletedSubjectFindUsecaseInterface):
+class ListCompletedSubjectsUsecase(ListCompletedSubjectInputPort):
 
     REQUIRED_CONDITIONS: Set[Condition] = {
         Condition(CoolingMode.NONE, None),
@@ -41,7 +37,3 @@ class CompletedSubjectFindUsecase(CompletedSubjectFindUsecaseInterface):
             len(condition_set) == len(subject.sessions)
             and condition_set == self.REQUIRED_CONDITIONS
         )
-
-
-def new_completed_subject_find_usecase(subject_repo: SubjectRepository):
-    return CompletedSubjectFindUsecase(subject_repo)

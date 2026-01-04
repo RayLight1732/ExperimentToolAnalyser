@@ -1,0 +1,26 @@
+from abc import ABC, abstractmethod
+from domain.analysis.result.mean_and_se import MeanAndSEByCondition
+from application.dto.value_type import ValueType
+
+
+class CalculateMeanAndSEOutputPort(ABC):
+
+    @abstractmethod
+    def on_start(self, value_type: ValueType) -> None:
+        pass
+
+    @abstractmethod
+    def on_complete(
+        self,
+        value_type: ValueType,
+        result: MeanAndSEByCondition,
+    ) -> None:
+        pass
+
+    @abstractmethod
+    def on_error(
+        self,
+        value_type: ValueType,
+        error: Exception,
+    ) -> None:
+        pass

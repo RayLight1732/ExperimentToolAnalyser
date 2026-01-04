@@ -1,38 +1,39 @@
-from domain.service.calculator import Calculator
-from domain.analysis.result.by_condition_pair import ByConditionPair
-from domain.value_object.grouped_value import GroupedValue
 from domain.value_object.condition import Condition
-from typing import Tuple, Self
+from domain.value_object.grouped_value import GroupedValue
+from application.port.input.statistics_usecase_input_port import (
+    StatisticsUsecaseInputPort,
+)
+from application.port.output.calculator.run_paired_t_test_with_holm_output_port import (
+    RunPairedTTestWithHolmOutputPort,
+)
+from domain.value_object.condition import Condition
+from typing import Tuple
 from itertools import combinations
 from scipy.stats import ttest_rel
 from statsmodels.stats.multitest import multipletests  # type: ignore[import-untyped]
 import numpy as np
-from dataclasses import dataclass
+from application.dto.t_test_result_dto import (
+    CorrectedAndOriginalValue,
+    CorrectedAndOriginalValueByConditionPair,
+)
+from application.dto.value_type import ValueType
 
 
-@dataclass(frozen=True)
-class CorrectedAndOriginalValue:
-    @classmethod
-    def from_float(cls, corrected: float, original: float) -> Self:
-        return cls(corrected, original)
+class RunPairedTTestWithHolmUsecase(StatisticsUsecaseInputPort):
 
-    corrected: float
-    original: float
+    def __init__(self, output_port: RunPairedTTestWithHolmOutputPort):
+        self.output_port = output_port
 
+    def execute(
+        self,
+        value_type: ValueType,
+        values: GroupedValue[float],
+    ) -> None:
+        self.output_port.on_start(value_type)
+        result = self._calculate(values)
+        self.output_port.on_complete(value_type, result)
 
-CorrectedAndOriginalValueByConditionPair = ByConditionPair[CorrectedAndOriginalValue]
-
-
-class PairedTTestWithHolmCalculator(
-    Calculator[CorrectedAndOriginalValueByConditionPair]
-):
-    """
-    GroupedValue[float] を受け取り、
-    条件間の対応のある t 検定を行い、
-    Holm 法で補正した p 値を返す Calculator
-    """
-
-    def calculate(
+    def _calculate(
         self, collected: GroupedValue[float]
     ) -> CorrectedAndOriginalValueByConditionPair:
 
