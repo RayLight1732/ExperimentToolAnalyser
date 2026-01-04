@@ -54,6 +54,10 @@ from application.port.output.calculator.run_paired_t_test_with_holm_output_port 
 from application.usecase.service.collector.average_cop_speed_collector import (
     AverageCOPSpeedCollector,
 )
+from application.usecase.service.collector.filter.filter_factory import (
+    FilterFactoryImpl,
+)
+from application.usecase.service.collector.filter.name_filter import NameFilter
 
 
 class AppContext:
@@ -138,7 +142,8 @@ def new_collect_value_usecase(
                 value_type=SSQValueType.TOTAL,
                 output_port=output_port,
             ),
-        )
+        ),
+        filter_factory=FilterFactoryImpl(name_filter=NameFilter()),
     )
 
 
