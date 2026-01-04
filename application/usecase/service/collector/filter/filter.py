@@ -4,8 +4,6 @@ from typing import Any
 
 
 class Filter(ABC):
-    # def calculate(self, collected: GroupedValue[LaveledValue]) -> T:
-    #     pass
     @abstractmethod
-    def filter(self, values: GroupedValue[float], param: Any) -> GroupedValue[float]:
+    def filter(self, values: GroupedValue, param: Any) -> GroupedValue:
         pass

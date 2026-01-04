@@ -13,5 +13,5 @@ class CollectValueInputPort(ABC):
         subjects: List[Subject],
         value_type: ValueType,
         filter_parameter: Optional[FilterParameter],
-    ) -> GroupedValue[float]:
+    ) -> GroupedValue:
         pass

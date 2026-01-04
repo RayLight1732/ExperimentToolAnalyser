@@ -27,14 +27,14 @@ class RunPairedTTestWithHolmUsecase(StatisticsUsecaseInputPort):
     def execute(
         self,
         value_type: ValueType,
-        values: GroupedValue[float],
+        values: GroupedValue,
     ) -> None:
         self.output_port.on_start(value_type)
         result = self._calculate(values)
         self.output_port.on_complete(value_type, result)
 
     def _calculate(
-        self, collected: GroupedValue[float]
+        self, collected: GroupedValue
     ) -> CorrectedAndOriginalValueByConditionPair:
 
         conditions = list(collected.value.keys())

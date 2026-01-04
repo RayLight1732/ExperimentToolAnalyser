@@ -20,7 +20,7 @@ class AverageCOPSpeedCollector(Collector):
         self.body_sway_repository = body_sway_repository
         self.output_port = output_port
 
-    def collect(self, subjects: List[Subject]) -> GroupedValue[float]:
+    def collect(self, subjects: List[Subject]) -> GroupedValue:
         self.output_port.on_start(ValueType.AVERAGE_COP_SPEED)
         result: Dict[Condition, Dict[SubjectData, float]] = defaultdict(lambda: dict())
 

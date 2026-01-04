@@ -21,13 +21,13 @@ class RunRMAnovaUsecase(StatisticsUsecaseInputPort):
     def execute(
         self,
         value_type: ValueType,
-        values: GroupedValue[float],
+        values: GroupedValue,
     ) -> None:
         self.output_port.on_start(value_type)
         result = self._calculate(values)
         self.output_port.on_complete(value_type, self._to_rm_anova_result_dto(result))
 
-    def _calculate(self, collected: GroupedValue[float]) -> AnovaResults:
+    def _calculate(self, collected: GroupedValue) -> AnovaResults:
         df = self._to_long_dataframe(collected)
 
         anova = AnovaRM(
@@ -36,7 +36,7 @@ class RunRMAnovaUsecase(StatisticsUsecaseInputPort):
 
         return anova.fit()
 
-    def _to_long_dataframe(self, data: GroupedValue[float]) -> pd.DataFrame:
+    def _to_long_dataframe(self, data: GroupedValue) -> pd.DataFrame:
         records: List[Dict[str, Any]] = []
         for condition, subject_values in data.value.items():
             for subject, value in subject_values.items():

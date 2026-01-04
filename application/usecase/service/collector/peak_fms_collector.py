@@ -16,7 +16,7 @@ class PeakFMSCollector(Collector):
         self.fms_repo = fms_repo
         self.output_port = output_port
 
-    def collect(self, subjects: List[Subject]) -> GroupedValue[float]:
+    def collect(self, subjects: List[Subject]) -> GroupedValue:
         self.output_port.on_start(ValueType.PEAK_FMS)
         result: Dict[Condition, Dict[SubjectData, float]] = defaultdict(lambda: dict())
 

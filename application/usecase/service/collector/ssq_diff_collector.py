@@ -24,7 +24,7 @@ class SSQDiffCollector(Collector):
         self.value_type = value_type
         self.output_port = output_port
 
-    def collect(self, subjects: List[Subject]) -> GroupedValue[float]:
+    def collect(self, subjects: List[Subject]) -> GroupedValue:
         self.output_port.on_start(ValueType.from_ssq_value_type(self.value_type))
         result: Dict[Condition, Dict[SubjectData, float]] = defaultdict(lambda: dict())
 

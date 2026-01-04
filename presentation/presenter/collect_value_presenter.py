@@ -15,7 +15,7 @@ class CollectValuePresenter(CollectValueOutputPort):
     def on_error(self, value_type: ValueType, error: Exception) -> None:
         print(f"Error during collection of {value_type.name}: {str(error)}")
 
-    def on_complete(self, value_type: ValueType, result: GroupedValue[float]) -> None:
+    def on_complete(self, value_type: ValueType, result: GroupedValue) -> None:
         print(f"Completed collection for {value_type.name}.")
         if value_type == ValueType.AVERAGE_COP_SPEED:
             for condition, values in result.value.items():

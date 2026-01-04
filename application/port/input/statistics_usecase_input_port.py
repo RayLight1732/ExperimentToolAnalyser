@@ -8,6 +8,6 @@ class StatisticsUsecaseInputPort(ABC):
     def execute(
         self,
         value_type: ValueType,
-        values: GroupedValue[float],
+        values: GroupedValue,
     ) -> None:
         pass

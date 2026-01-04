@@ -22,7 +22,7 @@ class CollectValueOutputPort(ABC):
     def on_complete(
         self,
         value_type: ValueType,
-        result: GroupedValue[float],
+        result: GroupedValue,
     ) -> None:
         pass
 

@@ -22,7 +22,7 @@ class CollectValueUsecase(CollectValueInputPort):
         subjects: List[Subject],
         value_type: ValueType,
         filter_parameter: Optional[FilterParameter] = None,
-    ) -> GroupedValue[float]:
+    ) -> GroupedValue:
         raw = self.collector_factory.get(value_type).collect(subjects)
         if filter_parameter is not None:
             return self.filter_factory.get(filter_parameter.type).filter(

@@ -7,7 +7,7 @@ class NameFilter(Filter):
     def __init__(self) -> None:
         super().__init__()
 
-    def filter(self, values: GroupedValue[float], param: Any) -> GroupedValue[float]:
+    def filter(self, values: GroupedValue, param: Any) -> GroupedValue:
         if isinstance(param, list):
             raise ValueError("param must be List[str]")
 
