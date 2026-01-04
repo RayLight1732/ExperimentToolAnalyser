@@ -7,6 +7,7 @@ import yaml
 @dataclass(frozen=True)
 class Config:
     working_dir: str
+    save_dir: str
 
 
 def load_config(path: Optional[str] = None) -> Config:
@@ -24,6 +25,7 @@ def load_config(path: Optional[str] = None) -> Config:
 
     try:
         working_dir = data["working_dir"]
-        return Config(working_dir=working_dir)
+        save_dir = data["save_dir"]
+        return Config(working_dir=working_dir, save_dir=save_dir)
     except KeyError as e:
         raise ValueError(f"Missing required config key: {e}") from e

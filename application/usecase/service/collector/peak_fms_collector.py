@@ -42,6 +42,6 @@ class PeakFMSCollector(Collector):
         except Exception as e:
             self.output_port.on_error(ValueType.PEAK_FMS, e)
 
-        grouped = GroupedValue(dict(result))
+        grouped = GroupedValue("peak_fms", dict(result))
         self.output_port.on_complete(ValueType.PEAK_FMS, grouped)
         return grouped
