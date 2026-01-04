@@ -9,6 +9,7 @@ class CollectorFactoryImpl(CollectorFactory):
     def __init__(
         self,
         peak_fms_collector: Collector,
+        average_cop_speed_collector: Collector,
         ssq_nausea_diff_collector: Collector,
         ssq_oculomotor_diff_collector: Collector,
         ssq_disorientation_diff_collector: Collector,
@@ -16,6 +17,7 @@ class CollectorFactoryImpl(CollectorFactory):
     ):
         self._collectors = {
             ValueType.PEAK_FMS: peak_fms_collector,
+            ValueType.AVERAGE_COP_SPEED: average_cop_speed_collector,
             ValueType.SSQ_NAUSEA: ssq_nausea_diff_collector,
             ValueType.SSQ_OCULOMOTOR: ssq_oculomotor_diff_collector,
             ValueType.SSQ_DISORIENTATION: ssq_disorientation_diff_collector,

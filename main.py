@@ -26,16 +26,14 @@ def main(config_path: Optional[str] = None) -> None:
 
     controller.calculate_mean_and_se(
         [
-            ValueType.SSQ_NAUSEA,
-            ValueType.PEAK_FMS,
+            ValueType.AVERAGE_COP_SPEED,
         ]
     )
-    controller.run_paired_t_test_with_holm(
-        [
-            ValueType.SSQ_NAUSEA,
-            ValueType.PEAK_FMS,
-        ]
-    )
+    # controller.run_paired_t_test_with_holm(
+    #     [
+    #         ValueType.AVERAGE_COP_SPEED,
+    #     ]
+    # )
 
 
 if __name__ == "__main__":
