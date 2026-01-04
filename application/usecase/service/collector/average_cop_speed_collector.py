@@ -48,6 +48,6 @@ class AverageCOPSpeedCollector(Collector):
         except Exception as e:
             self.output_port.on_error(ValueType.AVERAGE_COP_SPEED, e)
 
-        grouped = GroupedValue(dict(result))
+        grouped = GroupedValue("average_cop_speed", dict(result))
         self.output_port.on_complete(ValueType.AVERAGE_COP_SPEED, grouped)
         return grouped

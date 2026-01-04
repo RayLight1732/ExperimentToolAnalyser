@@ -2,7 +2,7 @@ import math
 from typing import Dict
 from domain.value_object.condition import Condition
 from domain.value_object.grouped_value import GroupedValue
-from domain.analysis.result.mean_and_se import MeanAndSEByCondition, MeanAndSE
+from application.dto.mean_and_se import MeanAndSEByCondition, MeanAndSE
 from application.port.input.statistics_usecase_input_port import (
     StatisticsUsecaseInputPort,
 )

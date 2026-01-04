@@ -1,7 +1,7 @@
 from typing import Any, Dict, List
 import matplotlib.pyplot as plt
 import japanize_matplotlib  # type: ignore[import-untyped]
-from domain.analysis.result.mean_and_se import MeanAndSEByCondition
+from application.dto.mean_and_se import MeanAndSEByCondition
 from domain.value_object.condition import Condition
 from application.port.output.calculator.calculate_mean_and_se_output_port import (
     CalculateMeanAndSEOutputPort,
@@ -10,8 +10,9 @@ from application.dto.value_type import ValueType
 
 
 class MeanAndSePresenter(CalculateMeanAndSEOutputPort):
-    def __init__(self):
+    def __init__(self, on_complete_callback=None):
         self.results = {}
+        self.on_complete_callback = on_complete_callback
 
     def on_start(self, value_type: ValueType) -> None:
         pass
@@ -23,8 +24,10 @@ class MeanAndSePresenter(CalculateMeanAndSEOutputPort):
     ) -> None:
         self._plot_mean_and_se(
             result,
-            title="平均値 ± 標準誤差",
+            title=f"{value_type} 平均値 ± 標準誤差",
         )
+        if self.on_complete_callback is not None:
+            self.on_complete_callback(value_type, result)
 
     def on_error(
         self,

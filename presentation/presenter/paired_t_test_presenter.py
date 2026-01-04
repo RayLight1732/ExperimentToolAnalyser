@@ -6,6 +6,9 @@ from application.port.output.calculator.run_paired_t_test_with_holm_output_port 
 
 
 class PairedTTestPresenter(RunPairedTTestWithHolmOutputPort):
+    def __init__(self, on_complete_callback=None):
+        self.results = {}
+        self.on_complete_callback = on_complete_callback
 
     def on_start(self, value_type: ValueType) -> None:
         pass
@@ -22,6 +25,8 @@ class PairedTTestPresenter(RunPairedTTestWithHolmOutputPort):
             print(f"  Original p-value: {t_test_result.original}")
             print(f"  Corrected p-value: {t_test_result.corrected}")
             print("")
+        if self.on_complete_callback is not None:
+            self.on_complete_callback(value_type, result)
 
     def on_error(
         self,

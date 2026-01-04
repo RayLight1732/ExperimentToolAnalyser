@@ -59,7 +59,7 @@ class SSQDiffCollector(Collector):
         except Exception as e:
             self.output_port.on_error(ValueType.from_ssq_value_type(self.value_type), e)
 
-        grouped = GroupedValue(dict(result))
+        grouped = GroupedValue(f"ssq_diff_{self.value_type}", dict(result))
         self.output_port.on_complete(
             ValueType.from_ssq_value_type(self.value_type), grouped
         )

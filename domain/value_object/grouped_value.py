@@ -6,4 +6,5 @@ from typing import Dict
 
 @dataclass(frozen=True)
 class GroupedValue:
+    name: str
     value: Dict[Condition, Dict[SubjectData, float]]

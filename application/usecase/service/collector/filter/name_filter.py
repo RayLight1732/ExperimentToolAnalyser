@@ -19,4 +19,4 @@ class NameFilter(Filter):
                     new_subject_value_map[subject] = value
             result[condition] = new_subject_value_map
 
-        return GroupedValue(result)
+        return GroupedValue(values.name, result)

@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from domain.analysis.result.mean_and_se import MeanAndSEByCondition
+from application.dto.mean_and_se import MeanAndSEByCondition
 from application.dto.value_type import ValueType
 
 

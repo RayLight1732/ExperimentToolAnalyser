@@ -58,6 +58,10 @@ from application.usecase.service.collector.filter.filter_factory import (
     FilterFactoryImpl,
 )
 from application.usecase.service.collector.filter.name_filter import NameFilter
+from application.usecase.save_calculation_result_usecase import (
+    SaveCalculationResultUsecase,
+)
+from infra.repository.laveled_value_repository import LaveledValueRepository
 
 
 class AppContext:
@@ -65,11 +69,15 @@ class AppContext:
         self.config = config
         self.file_system = OSFileSystem()
         self.path_resolver = PathResolver(config.working_dir)
+        self.save_path_resolver = PathResolver(config.save_dir)
 
         self.fms_repository = FMSRepository(self.path_resolver, self.file_system)
         self.ssq_repository = SSQRepository(self.path_resolver, self.file_system)
         self.body_sway_repository = BodySwayRepository(
             self.path_resolver, self.file_system
+        )
+        self.laveled_value_repository = LaveledValueRepository(
+            self.save_path_resolver, self.file_system
         )
 
 
@@ -171,9 +179,13 @@ def new_statistics_controller(
         list_completed_subjects_usecase=completed_subjects_usecase,
         collect_value_usecase=collect_value_usecase,
     )
+    save_calculation_result_usecase = SaveCalculationResultUsecase(
+        context.laveled_value_repository
+    )
 
     return StatisticsController(
         list_completed_subjects_usecase=completed_subjects_usecase,
         mean_and_se_orchestrator=mean_and_se_orchestrator,
         paired_t_test_orchestrator=paired_t_test_orchestrator,
+        save_calculation_result_input_port=save_calculation_result_usecase,
     )
