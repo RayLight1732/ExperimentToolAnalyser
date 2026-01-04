@@ -40,6 +40,7 @@ from infra.repository.fms_repository import FMSRepository
 from infra.repository.session_repository import new_session_repository
 from infra.repository.ssq_repository import SSQRepository
 from infra.repository.subject_repository import new_subject_repository
+from infra.repository.body_sway_repository import BodySwayRepository
 from presentation.controller.statistics_controller import StatisticsController
 from application.usecase.service.collector.peak_fms_collector import PeakFMSCollector
 from application.usecase.service.collector.ssq_diff_collector import SSQDiffCollector
@@ -49,6 +50,9 @@ from application.port.output.collect_value_output_port import (
 )
 from application.port.output.calculator.run_paired_t_test_with_holm_output_port import (
     RunPairedTTestWithHolmOutputPort,
+)
+from application.usecase.service.collector.average_cop_speed_collector import (
+    AverageCOPSpeedCollector,
 )
 
 
@@ -60,6 +64,9 @@ class AppContext:
 
         self.fms_repository = FMSRepository(self.path_resolver, self.file_system)
         self.ssq_repository = SSQRepository(self.path_resolver, self.file_system)
+        self.body_sway_repository = BodySwayRepository(
+            self.path_resolver, self.file_system
+        )
 
 
 def new_list_completed_subjects_usecase(
@@ -105,6 +112,10 @@ def new_collect_value_usecase(
         collector_factory=CollectorFactoryImpl(
             peak_fms_collector=PeakFMSCollector(
                 fms_repo=context.fms_repository,
+                output_port=output_port,
+            ),
+            average_cop_speed_collector=AverageCOPSpeedCollector(
+                body_sway_repository=context.body_sway_repository,
                 output_port=output_port,
             ),
             ssq_nausea_diff_collector=SSQDiffCollector(

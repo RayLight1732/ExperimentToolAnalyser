@@ -28,12 +28,14 @@ def main(config_path: Optional[str] = None) -> None:
         [
             ValueType.SSQ_NAUSEA,
             ValueType.PEAK_FMS,
+            ValueType.AVERAGE_COP_SPEED,
         ]
     )
     controller.run_paired_t_test_with_holm(
         [
             ValueType.SSQ_NAUSEA,
             ValueType.PEAK_FMS,
+            ValueType.AVERAGE_COP_SPEED,
         ]
     )
 
