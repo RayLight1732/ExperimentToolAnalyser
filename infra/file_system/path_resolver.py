@@ -1,6 +1,6 @@
-from domain.value_object.condition import Condition
+from domain.value.condition import Condition
 from datetime import datetime
-from domain.value_object.time_point import TimePoint
+from domain.value.time_point import TimePoint
 import os
 
 

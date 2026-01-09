@@ -1,6 +1,6 @@
-from domain.entity.subject import Session, TrialResultSummary
-from domain.value_object.condition import Condition
-from domain.value_object.time_point import TimePoint
+from domain.subject import Session, TrialResultSummary
+from domain.value.condition import Condition
+from domain.value.time_point import TimePoint
 from typing import Optional, List, Dict
 from domain.repository.session_repository import SessionRepository as ISessionRepository
 from infra.file_system.experiment_file_index import ExperimentFileIndex

@@ -1,7 +1,7 @@
 from typing import Sequence,Tuple
 from dataclasses import dataclass
-from domain.value_object.ssq import SSQ
-from domain.error.ssq_format_error import SSQFormatError
+from domain.value.ssq import SSQ
+from domain.value.ssq_format_error import SSQFormatError
 
 @dataclass(frozen=True)
 class SSQCsv:

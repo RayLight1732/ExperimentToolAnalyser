@@ -6,7 +6,7 @@ from domain.value_object.condition import Condition
 from application.port.output.calculator.calculate_mean_and_se_output_port import (
     CalculateMeanAndSEOutputPort,
 )
-from application.dto.value_type import ValueType
+from application.model.value_type import ValueType
 
 
 class MeanAndSePresenter(CalculateMeanAndSEOutputPort):

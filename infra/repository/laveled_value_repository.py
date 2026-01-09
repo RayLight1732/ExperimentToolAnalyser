@@ -1,4 +1,4 @@
-from domain.value_object.laveled_value import LaveledValues
+from domain.value.laveled_value import LaveledValues
 from domain.repository.laveled_value_repository import (
     LaveledValueRepository as ILaveledValueRepository,
 )

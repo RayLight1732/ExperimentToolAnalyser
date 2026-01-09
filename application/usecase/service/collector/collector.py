@@ -1,10 +1,9 @@
-from domain.entity.subject import Subject
-from domain.value_object.grouped_value import GroupedValue
-from abc import ABC, abstractmethod
-from typing import List
-
+from abc import ABC,abstractmethod
+from application.port.output.progress_output_port import ProgressAdvanceOutputPort
+from domain.subject import Subject
+from domain.value.grouped_value import GroupedValue
 
 class Collector(ABC):
     @abstractmethod
-    def collect(self, subjects: List[Subject]) -> GroupedValue:
+    def collect(self, subjects: list[Subject],progress_output_port:ProgressAdvanceOutputPort) -> GroupedValue:
         pass

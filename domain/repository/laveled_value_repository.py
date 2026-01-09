@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from domain.value_object.laveled_value import LaveledValues
+from domain.value.laveled_value import LaveledValues
 from typing import List
 
 

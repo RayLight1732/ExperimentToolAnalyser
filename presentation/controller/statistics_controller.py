@@ -5,8 +5,8 @@ from application.port.input.statistics_orchestrator_input_port import (
 from application.port.input.list_completed_subjects_input_port import (
     ListCompletedSubjectInputPort,
 )
-from domain.entity.subject import Subject
-from application.dto.value_type import ValueType
+from domain.subject import Subject
+from application.model.value_type import ValueType
 from application.dto.filter_parameter import FilterParameter
 from application.dto.mean_and_se import MeanAndSEByCondition
 from application.port.input.save_calculation_result_input_port import (

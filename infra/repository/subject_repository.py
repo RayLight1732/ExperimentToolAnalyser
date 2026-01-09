@@ -1,10 +1,12 @@
 from domain.repository.subject_repository import SubjectRepository as ISubjectRepository
-from domain.entity.subject import Subject,Session
+from domain.subject import Subject,Session
 from domain.repository.session_repository import SessionRepository
-from domain.value_object.subject_data import SubjectData
-from typing import Sequence,List
+from domain.value.condition import Condition
+from domain.value.subject_data import SubjectData
+from typing import Sequence,List, Set
 from infra.file_system.experiment_file_index import ExperimentFileIndex
 
+# TODO:write test
 class SubjectRepository(ISubjectRepository):
     def __init__(self,file_index:ExperimentFileIndex,session_repo:SessionRepository):
         self.file_index = file_index
@@ -20,6 +22,26 @@ class SubjectRepository(ISubjectRepository):
             subject = Subject(SubjectData(subject_name),sessions)
             subjects.append(subject)
         return subjects
+    
+    def list_completed_subjects(self, required:Set[Condition]):
+        subjects = self.list_subjects()
+        valid_subjects = [
+            subject
+            for subject in subjects
+            if self._has_all_required_conditions(subject)
+        ]
+
+        return valid_subjects
+    
+    def _has_all_required_conditions(self, subject: Subject,required:Set[Condition]):
+        condition_set: Set[Condition] = set()
+        for session in subject.sessions:
+            condition_set.add(session.condition)
+        return (
+            len(condition_set) == len(subject.sessions)
+            and condition_set == required
+        )
+
 
 def new_subject_repository(file_index:ExperimentFileIndex,session_repo:SessionRepository):
     return SubjectRepository(file_index,session_repo)

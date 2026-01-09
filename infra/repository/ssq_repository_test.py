@@ -2,11 +2,11 @@ import pytest
 from datetime import datetime
 
 from infra.repository.ssq_repository import SSQRepository
-from domain.value_object.condition import Condition
-from domain.value_object.time_point import TimePoint
-from domain.error.ssq_not_found_error import SSQNotFoundError
-from domain.error.ssq_format_error import SSQFormatError
-from domain.value_object.ssq import SSQ
+from domain.value.condition import Condition
+from domain.value.time_point import TimePoint
+from domain.repository.error.ssq_not_found_error import SSQNotFoundError
+from domain.value.ssq_format_error import SSQFormatError
+from domain.value.ssq import SSQ
 from typing import List, Type
 from dataclasses import dataclass
 

@@ -1,7 +1,7 @@
 import pytest
 
 from infra.file_system.path_resolver import PathResolver
-from domain.value_object.condition import CoolingMode,Position,Condition
+from domain.value.condition import CoolingMode,Position,Condition
 from dataclasses import dataclass
 @pytest.fixture
 def resolver() -> PathResolver:

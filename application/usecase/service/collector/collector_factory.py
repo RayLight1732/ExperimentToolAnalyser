@@ -1,6 +1,5 @@
 from application.port.output.collector_factory import CollectorFactory
-from application.dto.value_type import ValueType
-from application.port.input.collect_value_input_port import CollectValueInputPort
+from application.model.value_type import ValueType
 from application.usecase.service.collector.collector import Collector
 
 

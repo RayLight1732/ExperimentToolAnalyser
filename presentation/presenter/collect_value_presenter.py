@@ -1,7 +1,7 @@
 from application.port.output.collect_value_output_port import (
     CollectValueOutputPort,
 )
-from application.dto.value_type import ValueType
+from application.model.value_type import ValueType
 from domain.value_object.grouped_value import GroupedValue
 
 

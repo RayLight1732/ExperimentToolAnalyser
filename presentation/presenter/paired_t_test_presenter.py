@@ -1,5 +1,5 @@
 from application.dto.t_test_result_dto import CorrectedAndOriginalValueByConditionPair
-from application.dto.value_type import ValueType
+from application.model.value_type import ValueType
 from application.port.output.calculator.run_paired_t_test_with_holm_output_port import (
     RunPairedTTestWithHolmOutputPort,
 )
