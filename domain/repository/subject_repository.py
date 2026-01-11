@@ -1,7 +1,9 @@
-from abc import ABC,abstractmethod
+from abc import ABC, abstractmethod
 from typing import Sequence
-from domain.entity.subject import Subject
+from domain.value.subject import Subject
+
+
 class SubjectRepository(ABC):
     @abstractmethod
-    def list_subjects(self)->Sequence[Subject]:
+    def list_subjects(self) -> Sequence[Subject]:
         pass

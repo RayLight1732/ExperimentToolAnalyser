@@ -2,8 +2,8 @@ from pytest_mock import MockerFixture
 from infra.repository.session_repository import SessionRepository
 from datetime import datetime, timedelta
 from infra.dto.session_files import ExperimentFile, FileKind
-from domain.entity.subject import TrialResultSummary
-from domain.value_object.time_point import TimePoint
+from domain.value.subject import TrialResultSummary
+from domain.value.time_point import TimePoint
 
 
 def test_try_build_summary_with_valid_value(mocker: MockerFixture):

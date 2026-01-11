@@ -1,6 +1,6 @@
 from abc import ABC,abstractmethod
-from domain.value_object.fms import FMS
-from domain.value_object.condition import Condition
+from domain.value.fms import FMS
+from domain.value.condition import Condition
 from datetime import datetime
 class FMSRepository(ABC):
 

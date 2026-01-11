@@ -1,7 +1,7 @@
 from typing import Sequence,Tuple
 from dataclasses import dataclass
-from domain.value_object.fms import FMS
-from domain.error.fms_format_error import FMSFormatError
+from domain.value.fms import FMS
+from domain.value.fms_format_error import FMSFormatError
 
 @dataclass(frozen=True)
 class FMSCsv:

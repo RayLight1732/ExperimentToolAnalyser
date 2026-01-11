@@ -1,4 +1,4 @@
-from domain.value_object.condition import Condition, CoolingMode, Position
+from domain.value.condition import Condition, CoolingMode, Position
 from typing import List, Set
 from infra.dto.session_files import SessionFileCandidates, ExperimentFile
 from infra.file_system.path_resolver import PathResolver

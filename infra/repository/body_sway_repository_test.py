@@ -1,11 +1,11 @@
 from pytest_mock import MockerFixture
 from infra.repository.body_sway_repository import BodySwayRepository
-from domain.value_object.condition import Condition, CoolingMode, Position
+from domain.value.condition import Condition, CoolingMode, Position
 from datetime import datetime
-from domain.value_object.body_sway import BodySway, COP
-from domain.value_object.subject_data import SubjectData
+from domain.value.body_sway import BodySway, COP
+from domain.value.subject_data import SubjectData
 import pytest
-from domain.error.body_sway_format_error import BodySwayFormatError
+from domain.repository.error.body_sway_format_error import BodySwayFormatError
 
 
 def test_body_sway_repository(mocker: MockerFixture) -> None:

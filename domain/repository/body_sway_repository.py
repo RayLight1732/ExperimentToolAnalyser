@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
-from domain.value_object.body_sway import BodySway
-from domain.value_object.condition import Condition
+from domain.value.body_sway import BodySway
+from domain.value.condition import Condition
 from datetime import datetime
-from domain.value_object.subject_data import SubjectData
+from domain.value.subject_data import SubjectData
 
 
 class BodySwayRepository(ABC):

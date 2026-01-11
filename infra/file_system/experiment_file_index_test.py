@@ -5,7 +5,7 @@ from infra.dto.session_files import SessionFileCandidates, ExperimentFile
 from infra.file_system.experiment_file_index import ExperimentFileIndex
 from infra.dto.session_files import FileKind
 from infra.file_system.file_name_parser import FileNameParser
-from domain.value_object.condition import Condition, CoolingMode, Position
+from domain.value.condition import Condition, CoolingMode, Position
 from pytest_mock import MockerFixture
 from typing import Dict, List
 

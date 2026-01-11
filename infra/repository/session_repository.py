@@ -1,6 +1,6 @@
-from domain.entity.subject import Session, TrialResultSummary
-from domain.value_object.condition import Condition
-from domain.value_object.time_point import TimePoint
+from domain.value.subject import Session, TrialResultSummary
+from domain.value.condition import Condition
+from domain.value.time_point import TimePoint
 from typing import Optional, List, Dict
 from domain.repository.session_repository import SessionRepository as ISessionRepository
 from infra.file_system.experiment_file_index import ExperimentFileIndex
@@ -20,11 +20,7 @@ class SessionRepository(ISessionRepository):
     ):
         self.index = index
 
-    def get_session(
-        self,
-        name: str,
-        condition:Condition
-    ) -> Session:
+    def get_session(self, name: str, condition: Condition) -> Session:
         candidates = self.index.scan(name, condition)
         questionnaires = [f for f in candidates.files if f.kind.is_questionnaire]
         body_sways = [f for f in candidates.files if f.kind == FileKind.BODY_SWAY]
@@ -116,5 +112,5 @@ class SessionRepository(ISessionRepository):
         return next((f for f in files if f.kind == kind), None)
 
 
-def new_session_repository(file_index:ExperimentFileIndex)->ISessionRepository:
+def new_session_repository(file_index: ExperimentFileIndex) -> ISessionRepository:
     return SessionRepository(file_index)
