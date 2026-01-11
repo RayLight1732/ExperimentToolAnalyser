@@ -3,7 +3,7 @@ from domain.value.ssq import SSQValueType
 
 
 class ValueType(Enum):
-    PEAK_FMS = "fms"
+    PEAK_FMS = "peak_fms"
     SSQ_NAUSEA = "ssq_nausea"
     SSQ_OCULOMOTOR = "ssq_oculomotor"
     SSQ_DISORIENTATION = "ssq_disorientation"

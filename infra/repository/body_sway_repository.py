@@ -2,7 +2,6 @@ from domain.repository.body_sway_repository import (
     BodySwayRepository as IBodySwayRepository,
 )
 from domain.value.condition import Condition
-from infra.dto.fms_csv import FMSCsv
 from infra.file_system.path_resolver import PathResolver
 from infra.file_system.file_system import FileSystem
 from datetime import datetime

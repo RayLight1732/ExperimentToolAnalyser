@@ -1,5 +1,5 @@
-from domain.value_object.subject_data import SubjectData
-from domain.value_object.condition import Condition
+from domain.value.subject_data import SubjectData
+from domain.value.condition import Condition
 from datetime import datetime
 
 

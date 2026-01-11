@@ -1,21 +1,23 @@
-from abc import ABC,abstractmethod
+from abc import ABC, abstractmethod
 from application.model.progress_phase import ProgressPhase
-from application.model.processing_category import ProcessingCategory
+from application.model.inferential_analysis_step import InferentialAnalysisStep
+
 
 class ProgressAdvanceOutputPort(ABC):
     @abstractmethod
-    def on_advanced(self, pahse:ProgressPhase,current: int, total: int):
+    def on_advanced(self, phase: ProgressPhase, current: int, total: int):
         pass
 
-class ProgressLifeCycleOutPutPort(ABC):
-    @abstractmethod
-    def on_started(self,category:ProcessingCategory):
-        pass
 
+class ProgressLifeCycleOutputPort(ABC):
     @abstractmethod
-    def on_finished(self,category:ProcessingCategory):
+    def on_started(self, category: InferentialAnalysisStep):
         pass
 
     @abstractmethod
-    def on_error(self,exception:Exception):
+    def on_finished(self, category: InferentialAnalysisStep):
+        pass
+
+    @abstractmethod
+    def on_error(self, exception: Exception):
         pass

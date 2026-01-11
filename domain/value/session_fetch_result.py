@@ -1,7 +1,8 @@
 from dataclasses import dataclass
-from typing import Optional,List
-from domain.subject import Session
+from typing import Optional, List
+from domain.value.subject import Session
 from domain.value.condition import Condition
+
 
 @dataclass(frozen=True)
 class SessionFetchResult:

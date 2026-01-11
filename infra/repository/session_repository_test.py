@@ -2,7 +2,7 @@ from pytest_mock import MockerFixture
 from infra.repository.session_repository import SessionRepository
 from datetime import datetime, timedelta
 from infra.dto.session_files import ExperimentFile, FileKind
-from domain.subject import TrialResultSummary
+from domain.value.subject import TrialResultSummary
 from domain.value.time_point import TimePoint
 
 
