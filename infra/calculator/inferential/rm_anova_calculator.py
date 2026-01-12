@@ -7,6 +7,7 @@ from domain.value.grouped_value import GroupedValue
 from statsmodels.stats.anova import AnovaRM, AnovaResults  # type: ignore[import-untyped]
 import pandas as pd
 from application.port.output.progress_output_port import ProgressAdvanceOutputPort
+from typing import cast
 
 
 class RMAnovaCalculator(InferentialCalculator):
@@ -23,7 +24,8 @@ class RMAnovaCalculator(InferentialCalculator):
         )
 
         anova_results = anova.fit()
-        evidence = Evidence(p_value=anova_results.anova_table["p"])  # type: ignore TODO
+        p = cast(float, anova_results.anova_table.loc["condition", "Pr > F"])
+        evidence = Evidence(p_value=p)
         return InferentialResult(
             RMAnovaCalculator.METHOD, {Comparison.global_(): evidence}
         )
