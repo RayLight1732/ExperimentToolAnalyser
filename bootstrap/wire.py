@@ -43,6 +43,7 @@ from presentation.cli.controller.inferential_analysis_cli_controller import (
     InferentialStatisticsCLIController,
 )
 from infra.calculator.inferential.rm_anova_calculator import RMAnovaCalculator
+from infra.calculator.inferential.friedman_calculator import FriedmanCalculator
 
 
 class AppContext:
@@ -133,7 +134,7 @@ def new_inferential_analysis_usecase(
             ),
         }
     )
-    calculator = RMAnovaCalculator(progress_advance_output_port)
+    calculator = FriedmanCalculator(progress_advance_output_port)
     post_processors: List[PostProcessor] = [HolmPostProcessor()]
     return RunInferentialAnalysisUseCase(
         required,
