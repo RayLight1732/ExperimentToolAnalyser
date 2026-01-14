@@ -1,4 +1,4 @@
-from application.dto.progress_phase import ProgressPhase
+from application.model.progress_phase import ProgressPhase
 from application.service.collector.collector import Collector
 from domain.value.subject import Subject
 from domain.value.subject_data import SubjectData
@@ -10,10 +10,10 @@ from domain.value.ssq import SSQValueType
 from typing import List, Dict
 from collections import defaultdict
 from application.port.output.progress_output_port import ProgressAdvanceOutputPort
-from application.dto.collector import from_ssq_value_type
+from application.model.collector import from_ssq_value_type
 
 
-# from application.dto.collector import
+# from application.model.collector import
 # TODO 変換ロジック
 class SSQDiffCollector(Collector):
     def __init__(

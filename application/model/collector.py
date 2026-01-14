@@ -1,6 +1,6 @@
 from domain.value.ssq import SSQValueType
-from application.dto.progress_phase import ProgressPhase
-from application.dto.inferential_analysis_step import InferentialAnalysisStep
+from application.model.progress_phase import ProgressPhase
+from application.model.inferential_analysis_step import InferentialAnalysisStep
 
 PEAK_FMS = ProgressPhase("peak_fms", InferentialAnalysisStep.COLLECT_VALUES)
 SSQ_NAUSEA = ProgressPhase("ssq_nausea", InferentialAnalysisStep.COLLECT_VALUES)

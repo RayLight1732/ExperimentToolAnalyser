@@ -2,7 +2,7 @@ from typing import Optional
 import sys
 from bootstrap.config import load_config
 from bootstrap.wire import new_cli_controller
-from application.dto.value_type import ValueType
+from application.model.value_type import ValueType
 
 
 def main(config_path):

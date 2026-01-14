@@ -1,4 +1,4 @@
-from application.dto.value_type import ValueType
+from application.model.value_type import ValueType
 from adapter.utils import parse_value_type_str
 from typing import Callable
 from application.port.input.inferential_statistics_input_port import (
