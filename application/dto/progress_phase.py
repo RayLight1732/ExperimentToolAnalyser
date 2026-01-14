@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from application.model.inferential_analysis_step import InferentialAnalysisStep
+from application.dto.inferential_analysis_step import InferentialAnalysisStep
 
 
 @dataclass(frozen=True)

@@ -1,5 +1,5 @@
-from application.model.progress_phase import ProgressPhase
-from application.model.inferential_analysis_step import InferentialAnalysisStep
+from application.dto.progress_phase import ProgressPhase
+from application.dto.inferential_analysis_step import InferentialAnalysisStep
 from application.port.output.progress_output_port import (
     ProgressAdvanceOutputPort,
     ProgressLifeCycleOutputPort,

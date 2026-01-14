@@ -1,4 +1,4 @@
-from presentation.cli.controller.inferential_analysis_cli_controller import (
+from adapter.controller.inferential_analysis_cli_controller import (
     InferentialStatisticsCLIController,
 )
 

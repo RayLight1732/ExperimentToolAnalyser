@@ -1,5 +1,5 @@
 from domain.value.condition import Condition, CoolingMode, Position
-from application.model.value_type import ValueType
+from application.dto.value_type import ValueType
 import re
 from typing import List, Tuple
 

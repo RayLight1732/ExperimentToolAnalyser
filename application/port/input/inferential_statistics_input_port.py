@@ -1,6 +1,6 @@
 from typing import Set
 from domain.value.condition import Condition
-from application.model.value_type import ValueType
+from application.dto.value_type import ValueType
 from abc import ABC, abstractmethod
 
 

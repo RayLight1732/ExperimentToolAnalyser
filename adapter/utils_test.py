@@ -1,6 +1,6 @@
 from domain.value.condition import Condition, CoolingMode, Position
-from application.model.value_type import ValueType
-from presentation.cli.utils import (
+from application.dto.value_type import ValueType
+from adapter.utils import (
     # tokenize_conditions,
     # parse_conditions_list,
     # parse_condition_str,

@@ -1,5 +1,5 @@
 from application.service.collector.collector_factory import CollectorFactory
-from application.model.value_type import ValueType
+from application.dto.value_type import ValueType
 from application.service.collector.collector import Collector
 
 from typing import Dict
@@ -13,14 +13,18 @@ from application.service.collector.peak_fms_collector import PeakFMSCollector
 from application.service.collector.ssq_diff_collector import SSQDiffCollector
 from domain.value.ssq import SSQValueType
 
+
 class CollectorFactoryImpl(CollectorFactory):
     def __init__(self, collectors: Dict[ValueType, Collector]) -> None:
         self.collectors = collectors
 
     def get(self, value_type: ValueType) -> Collector:
         return self.collectors[value_type]
-    
-def new_collector_factory(context:AppContext,progress_advance_output_port:ProgressAdvanceOutputPort)->CollectorFactory:
+
+
+def new_collector_factory(
+    context: AppContext, progress_advance_output_port: ProgressAdvanceOutputPort
+) -> CollectorFactory:
     factory = CollectorFactoryImpl(
         {
             ValueType.PEAK_FMS: PeakFMSCollector(
@@ -52,5 +56,5 @@ def new_collector_factory(context:AppContext,progress_advance_output_port:Progre
             ),
         }
     )
-    
+
     return factory

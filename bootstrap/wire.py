@@ -21,13 +21,14 @@ from infra.calculator.inferential.paired_t_test_calculator import PairedTTestCal
 from infra.calculator.inferential.wilcoxon_calculator import WilcoxonCalculator
 from infra.post_processor.holm_post_processor import HolmPostProcessor
 from domain.analysis.inferential.post_processor import PostProcessor
-from presentation.cli.controller.cli_controller import CLIController
-from presentation.cli.controller.inferential_analysis_cli_controller import (
+from adapter.controller.cli_controller import CLIController
+from adapter.controller.inferential_analysis_cli_controller import (
     InferentialStatisticsCLIController,
 )
 from application.service.collector.collector_factory_impl import new_collector_factory
 from infra.calculator.inferential.friedman_calculator import FriedmanCalculator
 from bootstrap.context import AppContext
+
 
 def new_inferential_analysis_usecase_factory(
     context: AppContext,
@@ -61,7 +62,7 @@ def new_inferential_analysis_usecase(
         Condition(CoolingMode.SICK_SCENE_ONLY, Position.CAROTID),
     }
 
-    collector_factory = new_collector_factory(context,progress_advance_output_port)
+    collector_factory = new_collector_factory(context, progress_advance_output_port)
     calculator = WilcoxonCalculator(progress_advance_output_port)
     post_processors: List[PostProcessor] = [HolmPostProcessor()]
     return RunInferentialAnalysisUseCase(

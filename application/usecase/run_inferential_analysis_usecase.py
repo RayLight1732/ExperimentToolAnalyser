@@ -1,4 +1,4 @@
-from application.model.inferential_analysis_step import InferentialAnalysisStep
+from application.dto.inferential_analysis_step import InferentialAnalysisStep
 from typing import List, Set
 from domain.value.condition import Condition
 from domain.repository.subject_repository import SubjectRepository
@@ -7,7 +7,7 @@ from domain.analysis.inferential.result.inferential_result_history import (
     InferentialResultHistory,
 )
 from application.service.collector.collector_factory import CollectorFactory
-from application.model.value_type import ValueType
+from application.dto.value_type import ValueType
 from domain.analysis.inferential.inferential_calculator import InferentialCalculator
 from domain.analysis.inferential.post_processor import PostProcessor
 from domain.value.subject import Subject

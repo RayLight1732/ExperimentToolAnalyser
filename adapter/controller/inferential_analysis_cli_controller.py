@@ -1,5 +1,5 @@
-from application.model.value_type import ValueType
-from presentation.cli.utils import parse_value_type_str
+from application.dto.value_type import ValueType
+from adapter.utils import parse_value_type_str
 from typing import Callable
 from application.port.input.inferential_statistics_input_port import (
     InferentialStatisticsInputPort,
@@ -11,10 +11,10 @@ from application.port.output.progress_output_port import (
 from application.port.output.inferential_statistics_output_port import (
     InferentialResultOutputPort,
 )
-from presentation.cli.presenter.inferential_result_presenter import (
+from adapter.presenter.inferential_result_presenter import (
     InferentialResultPresenter,
 )
-from presentation.cli.presenter.progress_presenter import ProgressPresenter
+from adapter.presenter.progress_presenter import ProgressPresenter
 
 
 class InferentialStatisticsCLIController:

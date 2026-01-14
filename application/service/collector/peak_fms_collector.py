@@ -7,7 +7,7 @@ from domain.repository.fms_repository import FMSRepository
 from typing import List, Dict
 from collections import defaultdict
 from application.port.output.progress_output_port import ProgressAdvanceOutputPort
-from application.model.collector import PEAK_FMS
+from application.dto.collector import PEAK_FMS
 import time
 
 
