@@ -28,8 +28,8 @@ class InferentialResultPresenter(InferentialResultOutputPort):
             right = comparison[0].right
             if left != None and right != None:
                 print(
-                    left.mode,
-                    right.mode,
+                    left.mode.display_name,
+                    right.mode.display_name,
                     comparison[1].p_value,
                 )
             elif comparison[0].is_global:

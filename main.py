@@ -8,12 +8,12 @@ from application.model.value_type import ValueType
 def main(config_path):
     config = load_config(config_path)
     controller = new_cli_controller(config)
-    # controller.handle(f"inferential {ValueType.PEAK_FMS.name}")
-    # controller.handle(f"inferential {ValueType.AVERAGE_COP_SPEED.name}")
-    # controller.handle(f"inferential {ValueType.SSQ_DISORIENTATION.name}")
-    # controller.handle(f"inferential {ValueType.SSQ_NAUSEA.name}")
-    # controller.handle(f"inferential {ValueType.SSQ_OCULOMOTOR.name}")
-    # controller.handle(f"inferential {ValueType.SSQ_TOTAL.name}")
+    controller.handle(f"inferential {ValueType.PEAK_FMS.name}")
+    controller.handle(f"inferential {ValueType.AVERAGE_COP_SPEED.name}")
+    controller.handle(f"inferential {ValueType.SSQ_DISORIENTATION.name}")
+    controller.handle(f"inferential {ValueType.SSQ_NAUSEA.name}")
+    controller.handle(f"inferential {ValueType.SSQ_OCULOMOTOR.name}")
+    controller.handle(f"inferential {ValueType.SSQ_TOTAL.name}")
 
     controller.handle(f"spaghetti {ValueType.PEAK_FMS.name}")
     controller.handle(f"spaghetti {ValueType.AVERAGE_COP_SPEED.name}")
