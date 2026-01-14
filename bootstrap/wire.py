@@ -28,6 +28,10 @@ from adapter.controller.inferential_analysis_cli_controller import (
 from application.service.collector.collector_factory_impl import new_collector_factory
 from infra.calculator.inferential.friedman_calculator import FriedmanCalculator
 from bootstrap.context import AppContext
+from infra.strage.file_graph_storage import FileGraphStorage
+from application.usecase.plot_data_usecase import PlotDataUseCase
+from infra.graph.spaghetti_plot_generator import SpaghettiPlotGenerator
+from adapter.controller.spaghetti_plot_cli_controller import SpaghettiPlotCLIController
 
 
 def new_inferential_analysis_usecase_factory(
@@ -76,6 +80,48 @@ def new_inferential_analysis_usecase(
     )
 
 
+def new_spaghetti_plot_usecase_factory(
+    context: AppContext,
+) -> Callable[
+    [
+        ProgressLifeCycleOutputPort,
+        ProgressAdvanceOutputPort,
+    ],
+    PlotDataUseCase,
+]:
+    return lambda progress_cycle_output_port, progress_advance_output_port: new_spaghetti_plot_usecase(
+        context,
+        progress_cycle_output_port,
+        progress_advance_output_port,
+    )
+
+
+def new_spaghetti_plot_usecase(
+    context: AppContext,
+    progress_cycle_output_port: ProgressLifeCycleOutputPort,
+    progress_advance_output_port: ProgressAdvanceOutputPort,
+):
+
+    required = {
+        Condition(CoolingMode.NONE),
+        Condition(CoolingMode.ALWAYS, Position.CAROTID),
+        Condition(CoolingMode.PERIODIC, Position.CAROTID),
+        Condition(CoolingMode.SICK_SCENE_ONLY, Position.CAROTID),
+    }
+
+    collector_factory = new_collector_factory(context, progress_advance_output_port)
+    generators = [SpaghettiPlotGenerator()]
+    storage = FileGraphStorage(context.config.save_dir)
+    return PlotDataUseCase(
+        required,
+        context.subject_repository,
+        collector_factory,
+        generators,  # type: ignore
+        progress_cycle_output_port,
+        storage,
+    )
+
+
 def new_cli_controller(config: Config):
     context = AppContext(config)
     inferential_analysis_usecase_factory = new_inferential_analysis_usecase_factory(
@@ -85,5 +131,8 @@ def new_cli_controller(config: Config):
         inferential_analysis_usecase_factory
     )
 
-    controller = CLIController(inferential_controller)
+    spaguetty_controller = SpaghettiPlotCLIController(
+        new_spaghetti_plot_usecase_factory(context)
+    )
+    controller = CLIController(inferential_controller, spaguetty_controller)
     return controller
