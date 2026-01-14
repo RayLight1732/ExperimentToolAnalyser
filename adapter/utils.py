@@ -4,8 +4,8 @@ import re
 from typing import List, Tuple
 
 
-def parse_value_type_str(input_line: str) -> ValueType:
-    return ValueType[input_line.strip().upper()]
+def parse_value_type_str(input_str: str) -> ValueType:
+    return ValueType[input_str.strip().upper()]
 
 
 # def parse_line(input_line: str) -> Tuple[ValueType, List[Condition]]:
