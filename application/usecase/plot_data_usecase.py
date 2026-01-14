@@ -1,7 +1,7 @@
 from typing import List, Dict
 from application.model.graph_options import GraphOptions
 from application.port.output.graph_storage_output_port import GraphStorageOutputPort
-from application.port.output.graph_generater import GraphGenerator
+from application.port.output.graph_generator import GraphGenerator
 from application.model.graph_type import GraphType
 from application.model.value_type import ValueType
 from application.port.output.progress_output_port import ProgressLifeCycleOutputPort

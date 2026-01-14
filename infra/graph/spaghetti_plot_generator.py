@@ -1,7 +1,7 @@
 from typing import Type
 from application.model.graph_type import GraphType
 from application.model.graph_options import GraphOptions
-from application.port.output.graph_generater import GraphGenerator
+from application.port.output.graph_generator import GraphGenerator
 import matplotlib.pyplot as plt
 from typing import cast, Optional, List, Dict
 import io
