@@ -42,11 +42,12 @@ class PlotDataUseCase(PlotDataInputPort):
         graph_title: str,
         graph_type: GraphType,
         option: GraphOptions,
+        filter: bool,
     ):
         try:
             subjects = self._filter_subjects_by_conditions()
 
-            grouped = self._collect(value_type, subjects)
+            grouped = self._collect(value_type, subjects, filter)
             self._save_fig(graph_title, grouped, graph_type, option)
         except Exception as e:
             self.progress_cycle_output_port.on_error(e)
@@ -69,11 +70,13 @@ class PlotDataUseCase(PlotDataInputPort):
 
         return subjects
 
-    def _collect(self, type: ValueType, subjects: List[Subject]) -> GroupedValue:
+    def _collect(
+        self, type: ValueType, subjects: List[Subject], filter: bool
+    ) -> GroupedValue:
         self.progress_cycle_output_port.on_started(
             InferentialAnalysisStep.COLLECT_VALUES
         )
-        grouped = self.collector_factory.get(type).collect(subjects)
+        grouped = self.collector_factory.get(type).collect(subjects, filter)
         self.progress_cycle_output_port.on_finished(
             InferentialAnalysisStep.COLLECT_VALUES
         )

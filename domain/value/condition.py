@@ -1,6 +1,7 @@
 from enum import Enum
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, Iterable
+
 
 class CoolingMode(Enum):
     NONE = "なし"
@@ -25,6 +26,7 @@ class Position(Enum):
     def display_name(self) -> str:
         return self.value
 
+
 @dataclass(frozen=True)
 class Condition:
     mode: CoolingMode
@@ -41,3 +43,8 @@ class Condition:
         if self.position is None:
             return f"{self.mode.display_name}"
         return f"{self.mode.display_name}/{self.position.display_name}"
+
+    @staticmethod
+    def all_same_position(conditions: Iterable["Condition"]) -> bool:
+        positions = {c.position for c in conditions if c.position is not None}
+        return len(positions) <= 1

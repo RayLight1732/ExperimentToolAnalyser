@@ -12,5 +12,6 @@ class PlotDataInputPort(ABC):
         graph_title: str,
         graph_type: GraphType,
         option: GraphOptions,
+        filter: bool,
     ):
         pass

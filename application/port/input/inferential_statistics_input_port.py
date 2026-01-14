@@ -6,5 +6,5 @@ from abc import ABC, abstractmethod
 
 class InferentialStatisticsInputPort(ABC):
     @abstractmethod
-    def execute(self, type: ValueType) -> None:
+    def execute(self, type: ValueType, filter: bool) -> None:
         pass

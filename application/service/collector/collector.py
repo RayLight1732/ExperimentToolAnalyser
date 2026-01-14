@@ -6,5 +6,5 @@ from domain.value.grouped_value import GroupedValue
 
 class Collector(ABC):
     @abstractmethod
-    def collect(self, subjects: list[Subject]) -> GroupedValue:
+    def collect(self, subjects: list[Subject], filter=False) -> GroupedValue:
         pass

@@ -24,7 +24,9 @@ class SpaghettiPlotCLIController:
         self.usecase_factory = usecase_factory
 
     def handle(self, input_line: str):
-        value_type = parse_value_type_str(input_line)
+        tokens = input_line.split()
+        value_type = parse_value_type_str(tokens[0])
+        filter = bool(tokens[1].strip())
 
         # TODO DIする
         progress_presenter = ProgressPresenter()
@@ -32,9 +34,13 @@ class SpaghettiPlotCLIController:
             progress_presenter,
             progress_presenter,
         )
+        title = value_type.name
+        if filter:
+            title += "_filtered"
         usecase.execute(
             value_type,
-            value_type.name,
+            title,
             GraphType.SPAGHETTI,
             GraphOptions(x_label="Condition", y_label=value_type.name),
+            filter,
         )

@@ -32,11 +32,14 @@ class InferentialStatisticsCLIController:
         self.usecase_factory = usecase_factory
 
     def handle(self, input_line: str):
-        value_type = parse_value_type_str(input_line)
+        tokens = input_line.split()
+        value_type = parse_value_type_str(tokens[0])
+        filter = bool(tokens[1].strip())
+
         progress_presenter = ProgressPresenter()
         usecase = self.usecase_factory(
             progress_presenter,
             progress_presenter,
             InferentialResultPresenter(),
         )
-        usecase.execute(type=value_type)
+        usecase.execute(type=value_type, filter=filter)

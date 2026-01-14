@@ -21,15 +21,13 @@ class SSQDiffCollector(Collector):
         ssq_repo: SSQRepository,
         value_type: SSQValueType,
         progress_output_port: ProgressAdvanceOutputPort,
-        filter_minus=False,
     ):
         super().__init__()
         self.ssq_repo = ssq_repo
         self.value_type = value_type
         self.progress_output_port = progress_output_port
-        self.filter_minus = filter_minus
 
-    def collect(self, subjects: List[Subject]) -> GroupedValue:
+    def collect(self, subjects: List[Subject], filter=False) -> GroupedValue:
 
         result: Dict[Condition, Dict[SubjectData, float]] = defaultdict(lambda: dict())
 
@@ -64,7 +62,7 @@ class SSQDiffCollector(Collector):
                     count,
                     length,
                 )
-        if self.filter_minus:
+        if filter:
             for minus in minuses:
                 for _, subject_data_dict in result.items():
                     del subject_data_dict[minus]

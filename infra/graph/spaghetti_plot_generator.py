@@ -19,10 +19,16 @@ class SpaghettiPlotGenerator(GraphGenerator):
         assert option is not None
         series_list = to_spaghetti_series(data)
 
+        only_mode = Condition.all_same_position(data.value.keys())
+        if only_mode:
+            x_label_factory = lambda c: c.mode.display_name
+        else:
+            x_label_factory = str
+
         plt.figure(figsize=(7, 5))
         for series in series_list:
             plt.plot(
-                [str(x_value) for x_value in series.x_values],
+                [x_label_factory(x_value) for x_value in series.x_values],
                 series.y_values,
                 marker=series.marker,
                 alpha=0.6,
@@ -31,6 +37,17 @@ class SpaghettiPlotGenerator(GraphGenerator):
         plt.xlabel(option.x_label)
         plt.ylabel(option.y_label)
         plt.title(title)
+        ax = plt.gca()
+        ax.text(
+            0.98,
+            0.98,
+            f"N = {len(series_list)}",
+            transform=ax.transAxes,  # ← 0〜1 の座標系
+            ha="right",
+            va="top",
+            fontsize=11,
+            alpha=0.8,
+        )
 
         buf = io.BytesIO()
         plt.savefig(buf, format="png")

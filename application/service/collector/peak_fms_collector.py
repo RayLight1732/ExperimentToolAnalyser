@@ -19,7 +19,7 @@ class PeakFMSCollector(Collector):
         self.fms_repo = fms_repo
         self.progress_output_port = progress_output_port
 
-    def collect(self, subjects: List[Subject]) -> GroupedValue:
+    def collect(self, subjects: List[Subject], filter=False) -> GroupedValue:
         result: Dict[Condition, Dict[SubjectData, float]] = defaultdict(lambda: dict())
 
         length = sum(len(subject.sessions) for subject in subjects)
