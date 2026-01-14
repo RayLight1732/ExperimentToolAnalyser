@@ -1,5 +1,5 @@
 from application.model.value_type import ValueType
-from adapter.utils import parse_value_type_str
+from adapter.utils import parse_value_type_str, parse_bool
 from typing import Callable
 from application.port.input.inferential_statistics_input_port import (
     InferentialStatisticsInputPort,
@@ -34,7 +34,7 @@ class InferentialStatisticsCLIController:
     def handle(self, input_line: str):
         tokens = input_line.split()
         value_type = parse_value_type_str(tokens[0])
-        filter = bool(tokens[1].strip())
+        filter = parse_bool(tokens[1])
 
         progress_presenter = ProgressPresenter()
         usecase = self.usecase_factory(

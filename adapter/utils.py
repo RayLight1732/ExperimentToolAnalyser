@@ -8,6 +8,10 @@ def parse_value_type_str(input_str: str) -> ValueType:
     return ValueType[input_str.strip().upper()]
 
 
+def parse_bool(input_str: str) -> bool:
+    return input_str.strip().lower() == "true"
+
+
 # def parse_line(input_line: str) -> Tuple[ValueType, List[Condition]]:
 #     tokens = tokenize_conditions(input_line)
 #     if len(tokens) < 1:
