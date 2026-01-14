@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
-from application.dto.progress_phase import ProgressPhase
-from application.dto.inferential_analysis_step import InferentialAnalysisStep
+from application.model.progress_phase import ProgressPhase
+from application.model.inferential_analysis_step import InferentialAnalysisStep
 
 
 class ProgressAdvanceOutputPort(ABC):

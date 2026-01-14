@@ -1,7 +1,7 @@
 from typing import Type
 from domain.graph.graph_data import GraphData
 from domain.graph.graph_type import GraphType
-from application.dto.graph_options import GraphOptions
+from application.model.graph_options import GraphOptions
 from application.port.output.graph_generator import GraphGenerator
 from domain.graph.spaghetti_plot_data import SpaghettiPlotData
 

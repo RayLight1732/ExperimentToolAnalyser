@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from application.dto.value_type import ValueType
+from application.model.value_type import ValueType
 from application.service.collector.collector import Collector
 
 

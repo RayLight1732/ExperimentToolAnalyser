@@ -8,7 +8,7 @@ from domain.value.condition import Condition
 from domain.value.subject_data import SubjectData
 from collections import defaultdict
 from typing import Dict
-from application.dto.collector import AVERAGE_COP_SPEED
+from application.model.collector import AVERAGE_COP_SPEED
 
 
 class AverageCOPSpeedCollector(Collector):
