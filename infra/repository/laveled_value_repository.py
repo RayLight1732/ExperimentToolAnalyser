@@ -15,7 +15,7 @@ class LaveledValueRepository(ILaveledValueRepository):
 
     def save(self, name: str, values: List[LaveledValues]):
         self.file_system.save_csv(
-            self.path_resolver.mean_and_se_path(name), self._generate(values)
+            self.path_resolver.save_path(name), self._generate(values)
         )
 
     def _generate(

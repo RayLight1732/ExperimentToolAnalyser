@@ -15,11 +15,13 @@ from adapter.presenter.inferential_result_presenter import (
     InferentialResultPresenter,
 )
 from adapter.presenter.progress_presenter import ProgressPresenter
+from domain.repository.inferential_result_repository import InferentialResultRepository
 
 
 class InferentialStatisticsCLIController:
     def __init__(
         self,
+        repository: InferentialResultRepository,  # TODO どうにかする
         usecase_factory: Callable[
             [
                 ProgressLifeCycleOutputPort,
@@ -29,6 +31,7 @@ class InferentialStatisticsCLIController:
             InferentialStatisticsInputPort,
         ],
     ):
+        self.repository = repository
         self.usecase_factory = usecase_factory
 
     def handle(self, input_line: str):
@@ -36,10 +39,14 @@ class InferentialStatisticsCLIController:
         value_type = parse_value_type_str(tokens[0])
         filter = parse_bool(tokens[1])
 
+        file_name = value_type.name
+        if filter:
+            file_name += "_filtered"
+        file_name += ".csv"
         progress_presenter = ProgressPresenter()
         usecase = self.usecase_factory(
             progress_presenter,
             progress_presenter,
-            InferentialResultPresenter(),
+            InferentialResultPresenter(file_name, self.repository),
         )
         usecase.execute(type=value_type, filter=filter)

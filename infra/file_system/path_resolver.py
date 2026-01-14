@@ -48,5 +48,5 @@ class PathResolver:
         formatted = timestamp.strftime("%y%m%d%H%M%S")
         return os.path.join(base, f"{formatted}.csv")
 
-    def mean_and_se_path(self, name: str) -> str:
+    def save_path(self, name: str) -> str:
         return os.path.join(self.working_dir, name)

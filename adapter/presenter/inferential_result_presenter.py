@@ -7,13 +7,19 @@ from application.port.output.inferential_statistics_output_port import (
 from domain.analysis.inferential.result.inferential_result import InferentialResult
 from typing import List
 from domain.value.subject import Subject
+from domain.repository.inferential_result_repository import InferentialResultRepository
 
 
 class InferentialResultPresenter(InferentialResultOutputPort):
+    def __init__(self, file_name: str, repository: InferentialResultRepository) -> None:
+        super().__init__()
+        self.file_name = file_name
+        self.repository = repository
+
     def present(
         self, subjects: List[Subject], result: InferentialResultHistory
     ) -> None:
-
+        self.repository.save(self.file_name, result)
         self._print_result(result.original)
         for post_process_result in result.post_process:
             self._print_result(post_process_result)

@@ -128,7 +128,7 @@ def new_cli_controller(config: Config):
         context
     )
     inferential_controller = InferentialStatisticsCLIController(
-        inferential_analysis_usecase_factory
+        context.inferential_result_repository, inferential_analysis_usecase_factory
     )
 
     spaguetty_controller = SpaghettiPlotCLIController(

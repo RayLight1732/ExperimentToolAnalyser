@@ -11,6 +11,8 @@ from infra.repository.subject_repository import SubjectRepository
 from infra.repository.session_repository import SessionRepository
 from infra.calculator.inferential.paired_t_test_calculator import PairedTTestCalculator
 from infra.calculator.inferential.rm_anova_calculator import RMAnovaCalculator
+from infra.repository.inferential_result_repository import InferentialResultRepository
+
 
 class AppContext:
     def __init__(self, config: Config):
@@ -34,4 +36,7 @@ class AppContext:
         self.session_repository = SessionRepository(self.file_index)
         self.subject_repository = SubjectRepository(
             self.file_index, self.session_repository
+        )
+        self.inferential_result_repository = InferentialResultRepository(
+            self.save_path_resolver, self.file_system
         )
