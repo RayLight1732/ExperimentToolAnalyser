@@ -7,7 +7,7 @@ from domain.value.condition import Condition
 from domain.repository.ssq_repository import SSQRepository
 from domain.value.time_point import TimePoint
 from domain.value.ssq import SSQValueType
-from typing import List, Dict
+from typing import List, Dict, Set
 from collections import defaultdict
 from application.port.output.progress_output_port import ProgressAdvanceOutputPort
 from application.model.collector import from_ssq_value_type
@@ -21,11 +21,13 @@ class SSQDiffCollector(Collector):
         ssq_repo: SSQRepository,
         value_type: SSQValueType,
         progress_output_port: ProgressAdvanceOutputPort,
+        filter_minus=False,
     ):
         super().__init__()
         self.ssq_repo = ssq_repo
         self.value_type = value_type
         self.progress_output_port = progress_output_port
+        self.filter_minus = filter_minus
 
     def collect(self, subjects: List[Subject]) -> GroupedValue:
 
@@ -34,6 +36,7 @@ class SSQDiffCollector(Collector):
         length = sum(len(subject.sessions) for subject in subjects)
         count = 0
 
+        minuses: Set[SubjectData] = set()
         for subject in subjects:
             for session in subject.sessions:
                 ssq_before = self.ssq_repo.get_ssq(
@@ -48,16 +51,23 @@ class SSQDiffCollector(Collector):
                     TimePoint.AFTER,
                     session.result.ssq_timestamp[TimePoint.AFTER],
                 )
-                result[session.condition][subject.data] = ssq_after.get_value(
+                diff = ssq_after.get_value(self.value_type) - ssq_before.get_value(
                     self.value_type
-                ) - ssq_before.get_value(self.value_type)
-
+                )
+                if diff < 0:
+                    minuses.add(subject.data)
+                    print(f"minus_detected: {subject.data.name} {session.condition}")
+                result[session.condition][subject.data] = diff
                 count += 1
                 self.progress_output_port.on_advanced(
                     from_ssq_value_type(self.value_type),
                     count,
                     length,
                 )
+        if self.filter_minus:
+            for minus in minuses:
+                for _, subject_data_dict in result.items():
+                    del subject_data_dict[minus]
 
         grouped = GroupedValue(f"ssq_diff_{self.value_type}", dict(result))
 
