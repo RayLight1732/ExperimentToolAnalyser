@@ -59,18 +59,11 @@ def new_inferential_analysis_usecase(
     inferentional_result_output_port: InferentialResultOutputPort,
 ):
 
-    required = {
-        Condition(CoolingMode.NONE),
-        Condition(CoolingMode.ALWAYS, Position.CAROTID),
-        Condition(CoolingMode.PERIODIC, Position.CAROTID),
-        Condition(CoolingMode.SICK_SCENE_ONLY, Position.CAROTID),
-    }
-
     collector_factory = new_collector_factory(context, progress_advance_output_port)
     calculator = WilcoxonCalculator(progress_advance_output_port)
     post_processors: List[PostProcessor] = [HolmPostProcessor()]
     return RunInferentialAnalysisUseCase(
-        required,
+        context.config.required_conditions,
         context.subject_repository,
         collector_factory,
         calculator,
@@ -102,19 +95,11 @@ def new_spaghetti_plot_usecase(
     progress_advance_output_port: ProgressAdvanceOutputPort,
 ):
 
-    required = {
-        Condition(CoolingMode.NONE),
-        Condition(CoolingMode.ALWAYS, Position.CAROTID),
-        Condition(CoolingMode.PERIODIC, Position.CAROTID),
-        Condition(CoolingMode.SICK_SCENE_ONLY, Position.CAROTID),
-        Condition(CoolingMode.ALWAYS_STRONG,Position.CAROTID)
-    }
-
     collector_factory = new_collector_factory(context, progress_advance_output_port)
     generators = [SpaghettiPlotGenerator(),BoxPlotGenerator()]
     storage = FileGraphStorage(context.config.save_dir)
     return PlotDataUseCase(
-        required,
+        context.config.required_conditions,
         context.subject_repository,
         collector_factory,
         generators,  # type: ignore
