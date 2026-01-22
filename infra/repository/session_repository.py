@@ -32,7 +32,9 @@ class SessionRepository(ISessionRepository):
 
         if not summaries:
             #TODO nullでいいのでは？
-            raise ValueError(f"成立している試行がありません {name} {condition}")
+            #raise ValueError(f"成立している試行がありません {name} {condition}")
+            print(f"成立している試行がありません {name} {condition}")
+            return None
 
         latest_ts = max(summaries)
         return Session(condition, summaries[latest_ts])

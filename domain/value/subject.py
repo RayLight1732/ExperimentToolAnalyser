@@ -38,4 +38,5 @@ class Subject:
         condition_set: Set[Condition] = set()
         for session in self.sessions:
             condition_set.add(session.condition)
-        return len(condition_set) == len(self.sessions) and condition_set == required
+        # 被りがなく、requiredがすべて含まれている場合true
+        return len(condition_set) == len(self.sessions) and required.issubset(condition_set)

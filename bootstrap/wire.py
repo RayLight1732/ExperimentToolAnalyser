@@ -31,8 +31,8 @@ from bootstrap.context import AppContext
 from infra.strage.file_graph_storage import FileGraphStorage
 from application.usecase.plot_data_usecase import PlotDataUseCase
 from infra.graph.spaghetti_plot_generator import SpaghettiPlotGenerator
-from adapter.controller.spaghetti_plot_cli_controller import SpaghettiPlotCLIController
-
+from adapter.controller.plot_cli_controller import PlotCLIController
+from infra.graph.box_plot_generator import BoxPlotGenerator
 
 def new_inferential_analysis_usecase_factory(
     context: AppContext,
@@ -64,6 +64,7 @@ def new_inferential_analysis_usecase(
         Condition(CoolingMode.ALWAYS, Position.CAROTID),
         Condition(CoolingMode.PERIODIC, Position.CAROTID),
         Condition(CoolingMode.SICK_SCENE_ONLY, Position.CAROTID),
+        Condition(CoolingMode.ALWAYS_STRONG,Position.CAROTID)
     }
 
     collector_factory = new_collector_factory(context, progress_advance_output_port)
@@ -107,10 +108,11 @@ def new_spaghetti_plot_usecase(
         Condition(CoolingMode.ALWAYS, Position.CAROTID),
         Condition(CoolingMode.PERIODIC, Position.CAROTID),
         Condition(CoolingMode.SICK_SCENE_ONLY, Position.CAROTID),
+        Condition(CoolingMode.ALWAYS_STRONG,Position.CAROTID)
     }
 
     collector_factory = new_collector_factory(context, progress_advance_output_port)
-    generators = [SpaghettiPlotGenerator()]
+    generators = [SpaghettiPlotGenerator(),BoxPlotGenerator()]
     storage = FileGraphStorage(context.config.save_dir)
     return PlotDataUseCase(
         required,
@@ -131,7 +133,7 @@ def new_cli_controller(config: Config):
         context.inferential_result_repository, inferential_analysis_usecase_factory
     )
 
-    spaguetty_controller = SpaghettiPlotCLIController(
+    spaguetty_controller = PlotCLIController(
         new_spaghetti_plot_usecase_factory(context)
     )
     controller = CLIController(inferential_controller, spaguetty_controller)

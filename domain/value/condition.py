@@ -8,6 +8,7 @@ class CoolingMode(Enum):
     PERIODIC = "周期的"
     SICK_SCENE_ONLY = "酔いやすい場面のみ"
     ALWAYS = "常時"
+    ALWAYS_STRONG = "常時_強"
 
     @property
     def display_name(self) -> str:

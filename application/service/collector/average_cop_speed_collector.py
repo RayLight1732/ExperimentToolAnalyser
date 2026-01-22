@@ -19,7 +19,7 @@ class AverageCOPSpeedCollector(Collector):
         self.body_sway_repository = body_sway_repository
         self.progress_output_port = progress_output_port
 
-    def collect(self, subjects: List[Subject], filter=False) -> GroupedValue:
+    def collect(self, subjects: List[Subject],target:Set[Condition], filter=False) -> GroupedValue:
         result: Dict[Condition, Dict[SubjectData, float]] = defaultdict(lambda: dict())
 
         length = sum(len(subject.sessions) for subject in subjects)
@@ -28,6 +28,8 @@ class AverageCOPSpeedCollector(Collector):
         sensored: Set[SubjectData] = set()
         for subject in subjects:
             for session in subject.sessions:
+                if not session.condition in target:
+                    continue
                 body_sway = self.body_sway_repository.load(
                     subject.data,
                     session.condition,

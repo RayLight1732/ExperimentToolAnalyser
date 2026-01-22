@@ -1,17 +1,17 @@
 from adapter.controller.inferential_analysis_cli_controller import (
     InferentialStatisticsCLIController,
 )
-from adapter.controller.spaghetti_plot_cli_controller import SpaghettiPlotCLIController
+from adapter.controller.plot_cli_controller import PlotCLIController
 
 
 class CLIController:
     def __init__(
         self,
         inferential_analysis_cli_controller: InferentialStatisticsCLIController,
-        spaghetti_plot_cli_controller: SpaghettiPlotCLIController,
+        plot_cli_controller: PlotCLIController,
     ) -> None:
         self.inferential_analysis_cli_controller = inferential_analysis_cli_controller
-        self.spaghetti_plot_cli_controller = spaghetti_plot_cli_controller
+        self.plot_cli_controller = plot_cli_controller
 
     def handle(self, input_line: str):
         split_result = input_line.split()
@@ -21,5 +21,5 @@ class CLIController:
         command = split_result[0]
         if command == "inferential":
             self.inferential_analysis_cli_controller.handle(input_line[len(command) :])
-        elif command == "spaghetti":
-            self.spaghetti_plot_cli_controller.handle(input_line[len(command) :])
+        elif command == "plot":
+            self.plot_cli_controller.handle(input_line[len(command) :])

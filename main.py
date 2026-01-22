@@ -3,6 +3,7 @@ import sys
 from bootstrap.config import load_config
 from bootstrap.wire import new_cli_controller
 from application.model.value_type import ValueType
+from application.model.graph_type import GraphType
 
 
 def run_all(controller, filter):
@@ -12,13 +13,13 @@ def run_all(controller, filter):
     controller.handle(f"inferential {ValueType.SSQ_NAUSEA.name} {filter}")
     controller.handle(f"inferential {ValueType.SSQ_OCULOMOTOR.name} {filter}")
     controller.handle(f"inferential {ValueType.SSQ_TOTAL.name} {filter}")
-
-    controller.handle(f"spaghetti {ValueType.PEAK_FMS.name} {filter}")
-    controller.handle(f"spaghetti {ValueType.AVERAGE_COP_SPEED.name} {filter}")
-    controller.handle(f"spaghetti {ValueType.SSQ_DISORIENTATION.name} {filter}")
-    controller.handle(f"spaghetti {ValueType.SSQ_NAUSEA.name} {filter}")
-    controller.handle(f"spaghetti {ValueType.SSQ_OCULOMOTOR.name} {filter}")
-    controller.handle(f"spaghetti {ValueType.SSQ_TOTAL.name} {filter}")
+    graph_type = GraphType.BOX_PLOT
+    controller.handle(f"plot {ValueType.PEAK_FMS.name} {filter} {graph_type}")
+    controller.handle(f"plot {ValueType.AVERAGE_COP_SPEED.name} {filter} {graph_type}")
+    controller.handle(f"plot {ValueType.SSQ_DISORIENTATION.name} {filter} {graph_type}")
+    controller.handle(f"plot {ValueType.SSQ_NAUSEA.name} {filter} {graph_type}")
+    controller.handle(f"plot {ValueType.SSQ_OCULOMOTOR.name} {filter} {graph_type}")
+    controller.handle(f"plot {ValueType.SSQ_TOTAL.name} {filter} {graph_type}")
 
 
 def main(config_path):

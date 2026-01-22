@@ -46,7 +46,6 @@ class PlotDataUseCase(PlotDataInputPort):
     ):
         try:
             subjects = self._filter_subjects_by_conditions()
-
             grouped = self._collect(value_type, subjects, filter)
             self._save_fig(graph_title, grouped, graph_type, option)
         except Exception as e:
@@ -76,7 +75,7 @@ class PlotDataUseCase(PlotDataInputPort):
         self.progress_cycle_output_port.on_started(
             InferentialAnalysisStep.COLLECT_VALUES
         )
-        grouped = self.collector_factory.get(type).collect(subjects, filter)
+        grouped = self.collector_factory.get(type).collect(subjects,self.required, filter)
         self.progress_cycle_output_port.on_finished(
             InferentialAnalysisStep.COLLECT_VALUES
         )

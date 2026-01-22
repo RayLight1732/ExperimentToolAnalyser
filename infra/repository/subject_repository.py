@@ -21,7 +21,8 @@ class SubjectRepository(ISubjectRepository):
             sessions: List[Session] = []
             for condition in self.file_index.list_sessions(subject_name):
                 session = self.session_repo.get_session(subject_name, condition)
-                sessions.append(session)
+                if session != None:
+                    sessions.append(session)
             subject = Subject(SubjectData(subject_name), sessions)
             subjects.append(subject)
         return subjects
