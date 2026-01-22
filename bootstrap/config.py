@@ -1,8 +1,9 @@
 from ast import List
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, Optional, Set
+from typing import Any, Dict, Optional, Set,List
 import yaml
+from domain.value.condition import Condition,Position,CoolingMode
 from domain.value.condition import Condition,Position,CoolingMode
 
 @dataclass(frozen=True)
@@ -12,7 +13,7 @@ class Config:
     required_conditions: Set[Condition]
 
 def _load_required_conditions(raw_conditions:List[Any])->Set[Condition]:
-    conditions: Set[Condition] = {}
+    conditions: Set[Condition] = set()
 
     for i, item in enumerate(raw_conditions):
         if not isinstance(item, dict):
@@ -32,10 +33,10 @@ def _load_required_conditions(raw_conditions:List[Any])->Set[Condition]:
                     f"Invalid position in condition #{i}: {item['position']}"
                 ) from e
 
-    try:
-        conditions.add(Condition(mode=mode, position=position))
-    except ValueError as e:
-        raise ValueError(f"Invalid condition #{i}: {e}") from e
+        try:
+            conditions.add(Condition(mode=mode, position=position))
+        except ValueError as e:
+            raise ValueError(f"Invalid condition #{i}: {e}") from e
     return conditions
 
 def load_config(path: Optional[str] = None) -> Config:
@@ -54,6 +55,13 @@ def load_config(path: Optional[str] = None) -> Config:
     try:
         working_dir = data["working_dir"]
         save_dir = data["save_dir"]
+
+        raw_conditions = data["required_conditions"]
+        if not isinstance(raw_conditions, list):
+            raise ValueError("'required' must be a list")
+        required_conditions = _load_required_conditions(raw_conditions)
+        
+        return Config(working_dir=working_dir, save_dir=save_dir,required_conditions=required_conditions)
 
         raw_conditions = data["required_conditions"]
         if not isinstance(raw_conditions, list):
