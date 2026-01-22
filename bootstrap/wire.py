@@ -73,7 +73,7 @@ def new_inferential_analysis_usecase(
     )
 
 
-def new_spaghetti_plot_usecase_factory(
+def new_plot_usecase_factory(
     context: AppContext,
 ) -> Callable[
     [
@@ -82,14 +82,14 @@ def new_spaghetti_plot_usecase_factory(
     ],
     PlotDataUseCase,
 ]:
-    return lambda progress_cycle_output_port, progress_advance_output_port: new_spaghetti_plot_usecase(
+    return lambda progress_cycle_output_port, progress_advance_output_port: new_plot_usecase(
         context,
         progress_cycle_output_port,
         progress_advance_output_port,
     )
 
 
-def new_spaghetti_plot_usecase(
+def new_plot_usecase(
     context: AppContext,
     progress_cycle_output_port: ProgressLifeCycleOutputPort,
     progress_advance_output_port: ProgressAdvanceOutputPort,
@@ -117,8 +117,8 @@ def new_cli_controller(config: Config):
         context.inferential_result_repository, inferential_analysis_usecase_factory
     )
 
-    spaguetty_controller = PlotCLIController(
-        new_spaghetti_plot_usecase_factory(context)
+    plot_controller = PlotCLIController(
+        new_plot_usecase_factory(context)
     )
-    controller = CLIController(inferential_controller, spaguetty_controller)
+    controller = CLIController(inferential_controller, plot_controller)
     return controller
