@@ -54,7 +54,7 @@ class BoxPlotGenerator(GraphGenerator):
         ax.text(
             0.98,
             0.98,
-            f"N = {sum(len(v) for v in box_values)}",
+            f"N = {len(box_values[0]) }",
             transform=ax.transAxes,
             ha="right",
             va="top",

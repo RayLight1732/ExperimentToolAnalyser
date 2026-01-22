@@ -45,7 +45,6 @@ class RunInferentialAnalysisUseCase(InferentialStatisticsInputPort):
     def execute(self, type: ValueType, filter: bool) -> None:
         try:
             subjects = self._filter_subjects_by_conditions()
-
             grouped = self._collect(type, subjects, filter)
             original = self._run_inferential_calculation(grouped)
             post_process_results = self._apply_post_processors(original)

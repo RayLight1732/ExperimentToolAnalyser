@@ -33,7 +33,7 @@ class InferentialResultRepository(IInferentialResultRepository):
         for post_process_result in result.post_process:
             yield [""]
             yield [post_process_result.method]
-            for value in self._generate_inferential_result(result.original):
+            for value in self._generate_inferential_result(post_process_result):
                 yield value
 
     def _generate_inferential_result(

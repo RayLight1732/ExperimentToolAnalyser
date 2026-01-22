@@ -64,7 +64,6 @@ def new_inferential_analysis_usecase(
         Condition(CoolingMode.ALWAYS, Position.CAROTID),
         Condition(CoolingMode.PERIODIC, Position.CAROTID),
         Condition(CoolingMode.SICK_SCENE_ONLY, Position.CAROTID),
-        Condition(CoolingMode.ALWAYS_STRONG,Position.CAROTID)
     }
 
     collector_factory = new_collector_factory(context, progress_advance_output_port)

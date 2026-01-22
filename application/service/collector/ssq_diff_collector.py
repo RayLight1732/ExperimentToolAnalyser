@@ -31,7 +31,7 @@ class SSQDiffCollector(Collector):
 
         result: Dict[Condition, Dict[SubjectData, float]] = defaultdict(lambda: dict())
 
-        length = sum(len(subject.sessions) for subject in subjects)
+        length = len(subjects) *len(target)
         count = 0
 
         minuses: Set[SubjectData] = set()

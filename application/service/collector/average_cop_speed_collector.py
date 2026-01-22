@@ -21,8 +21,7 @@ class AverageCOPSpeedCollector(Collector):
 
     def collect(self, subjects: List[Subject],target:Set[Condition], filter=False) -> GroupedValue:
         result: Dict[Condition, Dict[SubjectData, float]] = defaultdict(lambda: dict())
-
-        length = sum(len(subject.sessions) for subject in subjects)
+        length = len(subjects) *len(target)
         count = 0
 
         sensored: Set[SubjectData] = set()

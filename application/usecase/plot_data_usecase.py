@@ -46,7 +46,10 @@ class PlotDataUseCase(PlotDataInputPort):
     ):
         try:
             subjects = self._filter_subjects_by_conditions()
+            print(len(subjects))
             grouped = self._collect(value_type, subjects, filter)
+            for c,g in grouped.value.items():
+                print(c,len(g.items()))
             self._save_fig(graph_title, grouped, graph_type, option)
         except Exception as e:
             self.progress_cycle_output_port.on_error(e)

@@ -13,7 +13,7 @@ def run_all(controller, filter):
     controller.handle(f"inferential {ValueType.SSQ_NAUSEA.name} {filter}")
     controller.handle(f"inferential {ValueType.SSQ_OCULOMOTOR.name} {filter}")
     controller.handle(f"inferential {ValueType.SSQ_TOTAL.name} {filter}")
-    graph_type = GraphType.BOX_PLOT
+    graph_type = GraphType.SPAGHETTI
     controller.handle(f"plot {ValueType.PEAK_FMS.name} {filter} {graph_type}")
     controller.handle(f"plot {ValueType.AVERAGE_COP_SPEED.name} {filter} {graph_type}")
     controller.handle(f"plot {ValueType.SSQ_DISORIENTATION.name} {filter} {graph_type}")
