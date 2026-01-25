@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict,Set
 from itertools import combinations
 from scipy.stats import ttest_rel
 import numpy as np
@@ -9,7 +9,7 @@ from domain.analysis.inferential.result.evidence import Evidence
 from domain.analysis.inferential.result.inferential_result import InferentialResult
 from domain.analysis.inferential.inferential_calculator import InferentialCalculator
 from domain.value.grouped_value import GroupedValue
-
+from domain.value.condition import Condition
 
 class PairedTTestCalculator(InferentialCalculator):
     METHOD = "paired_t"
@@ -17,13 +17,15 @@ class PairedTTestCalculator(InferentialCalculator):
     def __init__(self, output_port: ProgressAdvanceOutputPort):
         self.output_port = output_port
 
-    def calculate(self, grouped: GroupedValue) -> InferentialResult:
+    def calculate(self, grouped: GroupedValue,target:Set[Condition]) -> InferentialResult:
         conditions = list(grouped.value.keys())
 
         result: Dict[Comparison, Evidence] = {}
 
         # 条件ペアごとに対応のある t 検定
         for c1, c2 in combinations(conditions, 2):
+            if not {c1,c2}.issubset(target):
+                continue
             data1 = grouped.value[c1]
             data2 = grouped.value[c2]
 

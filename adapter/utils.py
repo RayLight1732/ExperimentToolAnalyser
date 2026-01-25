@@ -1,5 +1,6 @@
 from domain.value.condition import Condition, CoolingMode, Position
 from application.model.value_type import ValueType
+from application.model.graph_type import GraphType
 import re
 from typing import List, Tuple
 
@@ -10,6 +11,9 @@ def parse_value_type_str(input_str: str) -> ValueType:
 
 def parse_bool(input_str: str) -> bool:
     return input_str.strip().lower() == "true"
+
+def parse_graph_type(input_str:str) -> bool:
+    return GraphType[input_str.strip().upper()]
 
 
 # def parse_line(input_line: str) -> Tuple[ValueType, List[Condition]]:

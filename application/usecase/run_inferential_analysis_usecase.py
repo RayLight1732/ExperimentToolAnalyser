@@ -45,7 +45,6 @@ class RunInferentialAnalysisUseCase(InferentialStatisticsInputPort):
     def execute(self, type: ValueType, filter: bool) -> None:
         try:
             subjects = self._filter_subjects_by_conditions()
-
             grouped = self._collect(type, subjects, filter)
             original = self._run_inferential_calculation(grouped)
             post_process_results = self._apply_post_processors(original)
@@ -80,7 +79,7 @@ class RunInferentialAnalysisUseCase(InferentialStatisticsInputPort):
         self.progress_cycle_output_port.on_started(
             InferentialAnalysisStep.COLLECT_VALUES
         )
-        grouped = self.collector_factory.get(type).collect(subjects, filter)
+        grouped = self.collector_factory.get(type).collect(subjects,self.required, filter)
         self.progress_cycle_output_port.on_finished(
             InferentialAnalysisStep.COLLECT_VALUES
         )
@@ -88,7 +87,7 @@ class RunInferentialAnalysisUseCase(InferentialStatisticsInputPort):
 
     def _run_inferential_calculation(self, grouped: GroupedValue) -> InferentialResult:
         self.progress_cycle_output_port.on_started(InferentialAnalysisStep.CALCULATE)
-        original = self.calculator.calculate(grouped)
+        original = self.calculator.calculate(grouped,self.required)
         self.progress_cycle_output_port.on_finished(InferentialAnalysisStep.CALCULATE)
         return original
 

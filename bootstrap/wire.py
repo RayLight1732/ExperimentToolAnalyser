@@ -31,8 +31,8 @@ from bootstrap.context import AppContext
 from infra.strage.file_graph_storage import FileGraphStorage
 from application.usecase.plot_data_usecase import PlotDataUseCase
 from infra.graph.spaghetti_plot_generator import SpaghettiPlotGenerator
-from adapter.controller.spaghetti_plot_cli_controller import SpaghettiPlotCLIController
-
+from adapter.controller.plot_cli_controller import PlotCLIController
+from infra.graph.box_plot_generator import BoxPlotGenerator
 
 def new_inferential_analysis_usecase_factory(
     context: AppContext,
@@ -73,7 +73,7 @@ def new_inferential_analysis_usecase(
     )
 
 
-def new_spaghetti_plot_usecase_factory(
+def new_plot_usecase_factory(
     context: AppContext,
 ) -> Callable[
     [
@@ -82,21 +82,21 @@ def new_spaghetti_plot_usecase_factory(
     ],
     PlotDataUseCase,
 ]:
-    return lambda progress_cycle_output_port, progress_advance_output_port: new_spaghetti_plot_usecase(
+    return lambda progress_cycle_output_port, progress_advance_output_port: new_plot_usecase(
         context,
         progress_cycle_output_port,
         progress_advance_output_port,
     )
 
 
-def new_spaghetti_plot_usecase(
+def new_plot_usecase(
     context: AppContext,
     progress_cycle_output_port: ProgressLifeCycleOutputPort,
     progress_advance_output_port: ProgressAdvanceOutputPort,
 ):
 
     collector_factory = new_collector_factory(context, progress_advance_output_port)
-    generators = [SpaghettiPlotGenerator()]
+    generators = [SpaghettiPlotGenerator(),BoxPlotGenerator()]
     storage = FileGraphStorage(context.config.save_dir)
     return PlotDataUseCase(
         context.config.required_conditions,
@@ -117,8 +117,8 @@ def new_cli_controller(config: Config):
         context.inferential_result_repository, inferential_analysis_usecase_factory
     )
 
-    spaguetty_controller = SpaghettiPlotCLIController(
-        new_spaghetti_plot_usecase_factory(context)
+    plot_controller = PlotCLIController(
+        new_plot_usecase_factory(context)
     )
-    controller = CLIController(inferential_controller, spaguetty_controller)
+    controller = CLIController(inferential_controller, plot_controller)
     return controller

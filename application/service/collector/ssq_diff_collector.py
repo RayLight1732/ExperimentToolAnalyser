@@ -27,16 +27,18 @@ class SSQDiffCollector(Collector):
         self.value_type = value_type
         self.progress_output_port = progress_output_port
 
-    def collect(self, subjects: List[Subject], filter=False) -> GroupedValue:
+    def collect(self, subjects: List[Subject],target:Set[Condition], filter=False) -> GroupedValue:
 
         result: Dict[Condition, Dict[SubjectData, float]] = defaultdict(lambda: dict())
 
-        length = sum(len(subject.sessions) for subject in subjects)
+        length = len(subjects) *len(target)
         count = 0
 
         minuses: Set[SubjectData] = set()
         for subject in subjects:
             for session in subject.sessions:
+                if not session.condition in target:
+                    continue
                 ssq_before = self.ssq_repo.get_ssq(
                     subject.data.name,
                     session.condition,

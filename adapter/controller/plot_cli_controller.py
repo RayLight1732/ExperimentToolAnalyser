@@ -1,5 +1,5 @@
 from application.model.graph_options import GraphOptions
-from adapter.utils import parse_value_type_str, parse_bool
+from adapter.utils import parse_value_type_str, parse_bool, parse_graph_type
 from typing import Callable
 from application.port.input.plot_data_input_port import PlotDataInputPort
 from application.model.graph_type import GraphType
@@ -10,7 +10,7 @@ from application.port.output.progress_output_port import (
 from adapter.presenter.progress_presenter import ProgressPresenter
 
 
-class SpaghettiPlotCLIController:
+class PlotCLIController:
     def __init__(
         self,
         usecase_factory: Callable[
@@ -27,6 +27,7 @@ class SpaghettiPlotCLIController:
         tokens = input_line.split()
         value_type = parse_value_type_str(tokens[0])
         filter = parse_bool(tokens[1])
+        grah_type = parse_graph_type(tokens[2])
 
         # TODO DIする
         progress_presenter = ProgressPresenter()
@@ -40,7 +41,7 @@ class SpaghettiPlotCLIController:
         usecase.execute(
             value_type,
             title,
-            GraphType.SPAGHETTI,
+            grah_type,
             GraphOptions(x_label="Condition", y_label=value_type.name),
             filter,
         )
