@@ -42,7 +42,6 @@ class InferentialStatisticsCLIController:
         file_name = value_type.name
         if filter:
             file_name += "_filtered"
-        file_name += ".csv"
         progress_presenter = ProgressPresenter()
         usecase = self.usecase_factory(
             progress_presenter,

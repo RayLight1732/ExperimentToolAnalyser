@@ -21,6 +21,10 @@ class FileSystem(ABC):
     def save_csv(self, path: str, data: Generator[List[str], None, None]):
         pass
 
+    @abstractmethod
+    def save_text(self, path: str, data: Generator[str, None, None]):
+        pass
+
 
 class OSFileSystem(FileSystem):
     def listdir(self, path: str) -> list[str]:
@@ -42,3 +46,11 @@ class OSFileSystem(FileSystem):
             writer = csv.writer(f)
             for row in data:
                 writer.writerow(row)
+
+    def save_text(self, path: str, data: Generator[str, None, None]):
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+
+        with open(path, "w", encoding="utf-8") as f:
+            for line in data:
+                f.write(line)
+                f.write("\n")
