@@ -1,5 +1,5 @@
 from application.model.inferential_analysis_step import InferentialAnalysisStep
-from typing import List, Set
+from typing import Any, List, Set
 from domain.value.condition import Condition
 from domain.repository.subject_repository import SubjectRepository
 from domain.analysis.inferential.result.inferential_result import InferentialResult
@@ -21,15 +21,19 @@ from application.port.output.progress_output_port import (
 from application.port.input.inferential_statistics_input_port import (
     InferentialStatisticsInputPort,
 )
+from typing import Generic, TypeVar
+
+TOption = TypeVar("TOption")
 
 
-class RunInferentialAnalysisUseCase(InferentialStatisticsInputPort):
+
+class RunInferentialAnalysisUseCase(Generic[TOption],InferentialStatisticsInputPort[TOption]):
     def __init__(
         self,
         required: Set[Condition],
         subject_repo: SubjectRepository,
         collector_factory: CollectorFactory,
-        calculator: InferentialCalculator,
+        calculator: InferentialCalculator[TOption],
         post_processors: List[PostProcessor],
         progress_cycle_output_port: ProgressLifeCycleOutputPort,
         inferentional_result_output_port: InferentialResultOutputPort,
@@ -42,11 +46,11 @@ class RunInferentialAnalysisUseCase(InferentialStatisticsInputPort):
         self.progress_cycle_output_port = progress_cycle_output_port
         self.inferentional_result_output_port = inferentional_result_output_port
 
-    def execute(self, type: ValueType, filter: bool) -> None:
+    def execute(self, type: ValueType, filter: bool,option:TOption) -> None:
         try:
             subjects = self._filter_subjects_by_conditions()
             grouped = self._collect(type, subjects, filter)
-            original = self._run_inferential_calculation(grouped)
+            original = self._run_inferential_calculation(grouped,option)
             post_process_results = self._apply_post_processors(original)
 
             result = InferentialResultHistory(original, post_process_results)
@@ -85,9 +89,9 @@ class RunInferentialAnalysisUseCase(InferentialStatisticsInputPort):
         )
         return grouped
 
-    def _run_inferential_calculation(self, grouped: GroupedValue) -> InferentialResult:
+    def _run_inferential_calculation(self, grouped: GroupedValue,option:TOption) -> InferentialResult:
         self.progress_cycle_output_port.on_started(InferentialAnalysisStep.CALCULATE)
-        original = self.calculator.calculate(grouped,self.required)
+        original = self.calculator.calculate(grouped,option)
         self.progress_cycle_output_port.on_finished(InferentialAnalysisStep.CALCULATE)
         return original
 

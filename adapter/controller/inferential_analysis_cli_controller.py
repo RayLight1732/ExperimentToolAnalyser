@@ -22,14 +22,7 @@ class InferentialStatisticsCLIController:
     def __init__(
         self,
         repository: InferentialResultRepository,  # TODO どうにかする
-        usecase_factory: Callable[
-            [
-                ProgressLifeCycleOutputPort,
-                ProgressAdvanceOutputPort,
-                InferentialResultOutputPort,
-            ],
-            InferentialStatisticsInputPort,
-        ],
+        usecase_factory: Usecase
     ):
         self.repository = repository
         self.usecase_factory = usecase_factory
