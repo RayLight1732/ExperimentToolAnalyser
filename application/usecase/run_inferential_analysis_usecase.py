@@ -1,5 +1,6 @@
 from application.model.inferential_analysis_step import InferentialAnalysisStep
 from typing import Any, List, Set
+from application.service.collector.collector import Collector
 from domain.value.condition import Condition
 from domain.repository.subject_repository import SubjectRepository
 from domain.analysis.inferential.result.inferential_result import InferentialResult
@@ -32,24 +33,24 @@ class RunInferentialAnalysisUseCase(Generic[TOption],InferentialStatisticsInputP
         self,
         required: Set[Condition],
         subject_repo: SubjectRepository,
-        collector_factory: CollectorFactory,
+        collector: Collector,
         calculator: InferentialCalculator[TOption],
         post_processors: List[PostProcessor],
         progress_cycle_output_port: ProgressLifeCycleOutputPort,
-        inferentional_result_output_port: InferentialResultOutputPort,
+        result_output_port: InferentialResultOutputPort,
     ):
         self.required = required
         self.subject_repo = subject_repo
-        self.collector_factory = collector_factory
+        self.collector = collector
         self.calculator = calculator
         self.post_processors = post_processors
         self.progress_cycle_output_port = progress_cycle_output_port
-        self.inferentional_result_output_port = inferentional_result_output_port
+        self.inferentional_result_output_port = result_output_port
 
-    def execute(self, type: ValueType, filter: bool,option:TOption) -> None:
+    def execute(self,option:TOption) -> None:
         try:
             subjects = self._filter_subjects_by_conditions()
-            grouped = self._collect(type, subjects, filter)
+            grouped = self._collect(subjects)
             original = self._run_inferential_calculation(grouped,option)
             post_process_results = self._apply_post_processors(original)
 
@@ -78,12 +79,12 @@ class RunInferentialAnalysisUseCase(Generic[TOption],InferentialStatisticsInputP
         return subjects
 
     def _collect(
-        self, type: ValueType, subjects: List[Subject], filter: bool
+        self, subjects: List[Subject]
     ) -> GroupedValue:
         self.progress_cycle_output_port.on_started(
             InferentialAnalysisStep.COLLECT_VALUES
         )
-        grouped = self.collector_factory.get(type).collect(subjects,self.required, filter)
+        grouped = self.collector.collect(subjects,self.required)
         self.progress_cycle_output_port.on_finished(
             InferentialAnalysisStep.COLLECT_VALUES
         )

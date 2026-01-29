@@ -19,7 +19,11 @@ class WilcoxonCalculator(InferentialCalculator[TwoSampleTestOption]):
 
     def calculate(self, grouped: GroupedValue,option:TwoSampleTestOption) -> InferentialResult:
         
-        conditions = list(grouped.value.keys())
+        if len(option.comparisons) == 0:
+            conditions = list(grouped.value.keys())
+            pairs = combinations(conditions,2)
+        else:
+            pairs = [(comparison.left,comparison.right) for comparison in option.comparisons]
 
         result: Dict[Comparison, Evidence] = {}
 
@@ -44,4 +48,4 @@ class WilcoxonCalculator(InferentialCalculator[TwoSampleTestOption]):
 
             result[Comparison(c1, c2)] = Evidence(p_value=p)
 
-        return InferentialResult(method=TestType.WILCOXON_TEST, comparisons=result)
+        return InferentialResult(method=TestType.WILCOXON_TEST.name, comparisons=result)

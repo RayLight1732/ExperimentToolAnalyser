@@ -1,9 +1,12 @@
 from adapter.presenter.inferential_result_presenter import InferentialResultPresenter
 from adapter.presenter.progress_presenter import ProgressPresenter
+from application.model.graph_type import GraphType
 from application.model.value_type import ValueType
 from application.port.input.inferential_statistics_input_port import InferentialStatisticsInputPort
+from application.port.output.graph_generator import GraphGenerator
 from application.service.collector import collector_factory
 from application.service.collector.collector_factory import CollectorFactory
+from application.usecase.plot_data_usecase import PlotDataUseCase
 from application.usecase.run_inferential_analysis_usecase import RunInferentialAnalysisUseCase
 from bootstrap.context import AppContext
 from domain.analysis.inferential.options.two_sample_test_option import TwoSampleTestOption
@@ -11,33 +14,32 @@ from domain.analysis.inferential.post_processor import PostProcessor
 from domain.repository.inferential_result_repository import InferentialResultRepository
 from domain.value.condition import Condition
 from infra.calculator.inferential.calculator_factory import CalculatorFactory #TODO portにする
-from typing import List, Set
+from typing import Dict, List, Set
 
-class InferentialUsecaseFactory:
-    def __init__(self,collector_factory:CollectorFactory,calculator_factory:CalculatorFactory):
+from infra.strage.file_graph_storage import FileGraphStorage
+
+class PlotDataUsecaseFactory:
+    def __init__(self,context:AppContext,collector_factory:CollectorFactory,generators:List[GraphGenerator]):
+        self.context = context
         self.collector_factory = collector_factory
-        self.calculator_factory = calculator_factory
+        self.generators: Dict[GraphType, GraphGenerator] = {
+            gen.supported_type(): gen for gen in generators
+        }
 
-    def create_wilcoxon_usecase(
+    def create_plot_usecase(
         self,
-        context:AppContext,
-        post_processors:List[PostProcessor],
         value_type:ValueType,
-        required:Set[Condition],
-        file_name:str
-    ) -> InferentialStatisticsInputPort[TwoSampleTestOption]:
-
+        graph_type:GraphType,
+        required:Set[Condition]
+    ) -> PlotDataUseCase:
         progress_presenter = ProgressPresenter()
-        result_presenter = InferentialResultPresenter(
-            file_name, context.inferential_result_repository
-        )
+        storage_output_port = FileGraphStorage(self.context.config.save_dir)
 
-        return RunInferentialAnalysisUseCase(
+        return PlotDataUseCase(
             required=required,
-            subject_repo=context.subject_repository,
+            subject_repo=self.context.subject_repository,
             collector=self.collector_factory.get(value_type),
-            calculator=self.calculator_factory.create_wilcoxon_calculator(progress_presenter),
-            post_processors=post_processors,
+            generator= self.generators[graph_type],
             progress_cycle_output_port=progress_presenter,
-            result_output_port=result_presenter,
+            storage_output_port=storage_output_port,
         )

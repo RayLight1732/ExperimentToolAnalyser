@@ -10,5 +10,5 @@ TOption = TypeVar("TOption")
 
 class InferentialStatisticsInputPort(Generic[TOption],ABC):
     @abstractmethod
-    def execute(self, type: ValueType, filter: bool,option:TOption) -> None:
+    def execute(self, filter: bool,option:TOption) -> None:
         pass

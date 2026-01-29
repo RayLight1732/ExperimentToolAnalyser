@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import Type, Optional
 from domain.value.grouped_value import GroupedValue
 from application.model.graph_type import GraphType
-from application.model.graph_options import GraphOptions
+from application.model.graph_options import GraphOption
 
 
 # TODO 暗黙的にpngを想定している
@@ -14,7 +14,7 @@ class GraphGenerator(ABC):
         self,
         title: str,
         data: GroupedValue,
-        option: GraphOptions,
+        option: GraphOption,
     ) -> bytes:
         """
         Returns:

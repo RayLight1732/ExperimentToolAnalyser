@@ -1,5 +1,5 @@
 from application.model.graph_type import GraphType
-from application.model.graph_options import GraphOptions
+from application.model.graph_options import GraphOption
 from application.port.output.graph_generator import GraphGenerator
 from domain.value.grouped_value import GroupedValue
 from domain.value.condition import Condition
@@ -11,7 +11,7 @@ import japanize_matplotlib
 
 class BoxPlotGenerator(GraphGenerator):
 
-    def generate(self, title: str, data: GroupedValue, option: GraphOptions) -> bytes:
+    def generate(self, title: str, data: GroupedValue, option: GraphOption) -> bytes:
         assert option is not None
 
         # condition の並び順を安定させる
