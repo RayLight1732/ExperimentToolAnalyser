@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from application.model.graph_options import GraphOptions
+from application.model.graph_options import GraphOption
 from application.model.graph_type import GraphType
 from application.model.value_type import ValueType
 
@@ -11,7 +11,7 @@ class PlotDataInputPort(ABC):
         value_type: ValueType,
         graph_title: str,
         graph_type: GraphType,
-        option: GraphOptions,
+        option: GraphOption,
         filter: bool,
     ):
         pass

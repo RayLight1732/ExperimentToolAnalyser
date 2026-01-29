@@ -1,11 +1,12 @@
 from typing import List, Dict
-from application.model.graph_options import GraphOptions
+from application.model.graph_options import GraphOption
 from application.port.output.graph_storage_output_port import GraphStorageOutputPort
 from application.port.output.graph_generator import GraphGenerator
 from application.model.graph_type import GraphType
 from application.model.value_type import ValueType
 from application.port.output.progress_output_port import ProgressLifeCycleOutputPort
 from application.model.inferential_analysis_step import InferentialAnalysisStep
+from application.service.collector.collector import Collector
 from domain.value.grouped_value import GroupedValue
 from domain.value.subject import Subject
 from typing import Set
@@ -22,35 +23,29 @@ class PlotDataUseCase(PlotDataInputPort):
         self,
         required: Set[Condition],
         subject_repo: SubjectRepository,
-        collector_factory: CollectorFactory,
-        generators: List[GraphGenerator],
+        collector: Collector,
+        generator: GraphGenerator,
         progress_cycle_output_port: ProgressLifeCycleOutputPort,
         storage_output_port: GraphStorageOutputPort,
     ):
         self.required = required
         self.subject_repo = subject_repo
-        self.collector_factory = collector_factory
+        self.collector = collector
         self.storage_output_port = storage_output_port
         self.progress_cycle_output_port = progress_cycle_output_port
-        self._generators: Dict[GraphType, GraphGenerator] = {
-            gen.supported_type(): gen for gen in generators
-        }
+        self.generator = generator
 
     def execute(
         self,
-        value_type: ValueType,
         graph_title: str,
-        graph_type: GraphType,
-        option: GraphOptions,
-        filter: bool,
+        option: GraphOption,
     ):
         try:
             subjects = self._filter_subjects_by_conditions()
-            print(len(subjects))
-            grouped = self._collect(value_type, subjects, filter)
-            for c,g in grouped.value.items():
-                print(c,len(g.items()))
-            self._save_fig(graph_title, grouped, graph_type, option)
+            grouped = self._collect(
+                subjects,
+            )
+            self._save_fig(graph_title, grouped, option)
         except Exception as e:
             self.progress_cycle_output_port.on_error(e)
             raise
@@ -72,13 +67,11 @@ class PlotDataUseCase(PlotDataInputPort):
 
         return subjects
 
-    def _collect(
-        self, type: ValueType, subjects: List[Subject], filter: bool
-    ) -> GroupedValue:
+    def _collect(self, subjects: List[Subject]) -> GroupedValue:
         self.progress_cycle_output_port.on_started(
             InferentialAnalysisStep.COLLECT_VALUES
         )
-        grouped = self.collector_factory.get(type).collect(subjects,self.required, filter)
+        grouped = self.collector.collect(subjects, self.required)
         self.progress_cycle_output_port.on_finished(
             InferentialAnalysisStep.COLLECT_VALUES
         )
@@ -88,18 +81,10 @@ class PlotDataUseCase(PlotDataInputPort):
         self,
         title: str,
         grouped: GroupedValue,
-        graph_type: GraphType,
-        option: GraphOptions,
+        option: GraphOption,
     ):
-
-        # グラフタイプの検証
-        if graph_type not in self._generators:
-            raise ValueError(f"Unsupported graph type: {graph_type}")
-
-        generator = self._generators[graph_type]
-
         # グラフ生成
-        image_data = generator.generate(title, grouped, option=option)
+        image_data = self.generator.generate(title, grouped, option=option)
 
         # 保存
         self.storage_output_port.save(title, image_data)

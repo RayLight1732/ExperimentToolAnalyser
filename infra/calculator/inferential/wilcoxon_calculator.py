@@ -1,31 +1,34 @@
-from typing import Dict,Set
+from typing import Any, Dict, Set
 from itertools import combinations
 from scipy.stats import wilcoxon
 import numpy as np
 
 from application.port.output.progress_output_port import ProgressAdvanceOutputPort
+from domain.analysis.inferential.options.two_sample_test_option import TwoSampleTestOption
 from domain.analysis.inferential.result.comparison import Comparison
 from domain.analysis.inferential.result.evidence import Evidence
 from domain.analysis.inferential.result.inferential_result import InferentialResult
 from domain.analysis.inferential.inferential_calculator import InferentialCalculator
+from domain.analysis.inferential.test_type import TestType
 from domain.value.grouped_value import GroupedValue
 from domain.value.condition import Condition
 
-class WilcoxonCalculator(InferentialCalculator):
-    METHOD = "wilcoxon"
-
+class WilcoxonCalculator(InferentialCalculator[TwoSampleTestOption]):
     def __init__(self, output_port: ProgressAdvanceOutputPort):
         self.output_port = output_port
 
-    def calculate(self, grouped: GroupedValue,target:Set[Condition]) -> InferentialResult:
-        conditions = list(grouped.value.keys())
+    def calculate(self, grouped: GroupedValue,option:TwoSampleTestOption) -> InferentialResult:
+        
+        if len(option.comparisons) == 0:
+            conditions = list(grouped.value.keys())
+            pairs = combinations(conditions,2)
+        else:
+            pairs = [(comparison.left,comparison.right) for comparison in option.comparisons]
 
         result: Dict[Comparison, Evidence] = {}
 
         # 条件ペアごとに対応のある t 検定
-        for c1, c2 in combinations(conditions, 2):
-            if not {c1,c2}.issubset(target):
-                continue
+        for c1, c2 in pairs:
             data1 = grouped.value[c1]
             data2 = grouped.value[c2]
 
@@ -45,4 +48,4 @@ class WilcoxonCalculator(InferentialCalculator):
 
             result[Comparison(c1, c2)] = Evidence(p_value=p)
 
-        return InferentialResult(method=self.METHOD, comparisons=result)
+        return InferentialResult(method=TestType.WILCOXON_TEST.name, comparisons=result)

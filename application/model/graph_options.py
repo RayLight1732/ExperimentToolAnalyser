@@ -3,7 +3,7 @@ from typing import Dict, Any
 
 
 @dataclass(frozen=True)
-class GraphOptions:
+class GraphOption:
     """グラフのオプション設定"""
 
     width: int = 800

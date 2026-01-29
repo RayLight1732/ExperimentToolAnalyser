@@ -1,6 +1,6 @@
 from typing import Type
 from application.model.graph_type import GraphType
-from application.model.graph_options import GraphOptions
+from application.model.graph_options import GraphOption
 from application.port.output.graph_generator import GraphGenerator
 import matplotlib.pyplot as plt
 from typing import cast, Optional, List, Dict
@@ -15,7 +15,7 @@ import japanize_matplotlib
 
 class SpaghettiPlotGenerator(GraphGenerator):
 
-    def generate(self, title: str, data: GroupedValue, option: GraphOptions) -> bytes:
+    def generate(self, title: str, data: GroupedValue, option: GraphOption) -> bytes:
         assert option is not None
         series_list = to_spaghetti_series(data)
 

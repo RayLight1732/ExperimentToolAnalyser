@@ -28,7 +28,6 @@ class SSQDiffCollector(Collector):
         self.progress_output_port = progress_output_port
 
     def collect(self, subjects: List[Subject],target:Set[Condition], filter=False) -> GroupedValue:
-
         result: Dict[Condition, Dict[SubjectData, float]] = defaultdict(lambda: dict())
 
         length = len(subjects) *len(target)

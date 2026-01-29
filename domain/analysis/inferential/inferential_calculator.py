@@ -4,7 +4,11 @@ from domain.value.grouped_value import GroupedValue
 from typing import Set
 from domain.value.condition import Condition
 
-class InferentialCalculator(ABC):
+from typing import Generic, TypeVar
+
+TOption = TypeVar("TOption")
+
+class InferentialCalculator(Generic[TOption],ABC):
     @abstractmethod
-    def calculate(self, grouped: GroupedValue,target:Set[Condition]) -> InferentialResult:
+    def calculate(self, grouped: GroupedValue,option:TOption) -> InferentialResult:
         pass

@@ -1,47 +1,17 @@
-from application.model.graph_options import GraphOptions
-from adapter.utils import parse_value_type_str, parse_bool, parse_graph_type
-from typing import Callable
-from application.port.input.plot_data_input_port import PlotDataInputPort
-from application.model.graph_type import GraphType
-from application.port.output.progress_output_port import (
-    ProgressAdvanceOutputPort,
-    ProgressLifeCycleOutputPort,
-)
-from adapter.presenter.progress_presenter import ProgressPresenter
+from adapter.parser import plot_args_from_json
+from bootstrap.plot_data_usecase_factory import PlotDataUsecaseFactory
 
 
 class PlotCLIController:
     def __init__(
         self,
-        usecase_factory: Callable[
-            [
-                ProgressLifeCycleOutputPort,
-                ProgressAdvanceOutputPort,
-            ],
-            PlotDataInputPort,
-        ],
+        usecase_factory: PlotDataUsecaseFactory
     ):
         self.usecase_factory = usecase_factory
 
     def handle(self, input_line: str):
-        tokens = input_line.split()
-        value_type = parse_value_type_str(tokens[0])
-        filter = parse_bool(tokens[1])
-        grah_type = parse_graph_type(tokens[2])
+        args = plot_args_from_json(input_line)
+        usecase = self.usecase_factory.create_plot_usecase(args.value_type,args.graph_type,args.conditions)
 
-        # TODO DIする
-        progress_presenter = ProgressPresenter()
-        usecase = self.usecase_factory(
-            progress_presenter,
-            progress_presenter,
-        )
-        title = value_type.name
-        if filter:
-            title += "_filtered"
-        usecase.execute(
-            value_type,
-            title,
-            grah_type,
-            GraphOptions(x_label="Condition", y_label=value_type.name),
-            filter,
-        )
+        usecase.execute(args.title,args.option)
+

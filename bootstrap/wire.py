@@ -1,3 +1,6 @@
+from adapter.presenter import progress_presenter
+from adapter.presenter.progress_presenter import ProgressPresenter
+from application.service.collector import collector_factory
 from bootstrap.config import Config
 from application.port.input.inferential_statistics_input_port import (
     InferentialStatisticsInputPort,
@@ -5,6 +8,8 @@ from application.port.input.inferential_statistics_input_port import (
 from application.usecase.run_inferential_analysis_usecase import (
     RunInferentialAnalysisUseCase,
 )
+from bootstrap.inferential_statistics_factory import InferentialUsecaseFactory
+from bootstrap.plot_data_usecase_factory import PlotDataUsecaseFactory
 from domain.value.condition import Condition, Position, CoolingMode
 
 from typing import Callable, List
@@ -17,6 +22,8 @@ from application.port.output.progress_output_port import (
 )
 
 from application.port.output.progress_output_port import ProgressAdvanceOutputPort
+from infra.calculator.inferential import calculator_factory
+from infra.calculator.inferential.calculator_factory import CalculatorFactory
 from infra.calculator.inferential.paired_t_test_calculator import PairedTTestCalculator
 from infra.calculator.inferential.wilcoxon_calculator import WilcoxonCalculator
 from infra.post_processor.holm_post_processor import HolmPostProcessor
@@ -25,7 +32,7 @@ from adapter.controller.cli_controller import CLIController
 from adapter.controller.inferential_analysis_cli_controller import (
     InferentialStatisticsCLIController,
 )
-from application.service.collector.collector_factory_impl import new_collector_factory
+from application.service.collector.collector_factory_impl import CollectorFactoryImpl, new_collector_factory
 from infra.calculator.inferential.friedman_calculator import FriedmanCalculator
 from bootstrap.context import AppContext
 from infra.strage.file_graph_storage import FileGraphStorage
@@ -34,91 +41,20 @@ from infra.graph.spaghetti_plot_generator import SpaghettiPlotGenerator
 from adapter.controller.plot_cli_controller import PlotCLIController
 from infra.graph.box_plot_generator import BoxPlotGenerator
 
-def new_inferential_analysis_usecase_factory(
-    context: AppContext,
-) -> Callable[
-    [
-        ProgressLifeCycleOutputPort,
-        ProgressAdvanceOutputPort,
-        InferentialResultOutputPort,
-    ],
-    InferentialStatisticsInputPort,
-]:
-    return lambda progress_cycle_output_port, progress_advance_output_port, inferentional_result_output_port: new_inferential_analysis_usecase(
-        context,
-        progress_cycle_output_port,
-        progress_advance_output_port,
-        inferentional_result_output_port,
-    )
-
-
-def new_inferential_analysis_usecase(
-    context: AppContext,
-    progress_cycle_output_port: ProgressLifeCycleOutputPort,
-    progress_advance_output_port: ProgressAdvanceOutputPort,
-    inferentional_result_output_port: InferentialResultOutputPort,
-):
-
-    collector_factory = new_collector_factory(context, progress_advance_output_port)
-    calculator = WilcoxonCalculator(progress_advance_output_port)
-    post_processors: List[PostProcessor] = [HolmPostProcessor()]
-    return RunInferentialAnalysisUseCase(
-        context.config.required_conditions,
-        context.subject_repository,
-        collector_factory,
-        calculator,
-        post_processors,
-        progress_cycle_output_port,
-        inferentional_result_output_port,
-    )
-
-
-def new_plot_usecase_factory(
-    context: AppContext,
-) -> Callable[
-    [
-        ProgressLifeCycleOutputPort,
-        ProgressAdvanceOutputPort,
-    ],
-    PlotDataUseCase,
-]:
-    return lambda progress_cycle_output_port, progress_advance_output_port: new_plot_usecase(
-        context,
-        progress_cycle_output_port,
-        progress_advance_output_port,
-    )
-
-
-def new_plot_usecase(
-    context: AppContext,
-    progress_cycle_output_port: ProgressLifeCycleOutputPort,
-    progress_advance_output_port: ProgressAdvanceOutputPort,
-):
-
-    collector_factory = new_collector_factory(context, progress_advance_output_port)
-    generators = [SpaghettiPlotGenerator(),BoxPlotGenerator()]
-    storage = FileGraphStorage(context.config.save_dir)
-    return PlotDataUseCase(
-        context.config.required_conditions,
-        context.subject_repository,
-        collector_factory,
-        generators,  # type: ignore
-        progress_cycle_output_port,
-        storage,
-    )
 
 
 def new_cli_controller(config: Config):
     context = AppContext(config)
-    inferential_analysis_usecase_factory = new_inferential_analysis_usecase_factory(
-        context
-    )
+    progress_presenter = ProgressPresenter()
+    collector_factory = new_collector_factory(context,progress_presenter)
+    calculator_factory = CalculatorFactory()
     inferential_controller = InferentialStatisticsCLIController(
-        context.inferential_result_repository, inferential_analysis_usecase_factory
+        InferentialUsecaseFactory(collector_factory,    calculator_factory)
     )
 
+    generators = [SpaghettiPlotGenerator(),BoxPlotGenerator()]
     plot_controller = PlotCLIController(
-        new_plot_usecase_factory(context)
+        PlotDataUsecaseFactory(context,collector_factory,generators)
     )
-    controller = CLIController(inferential_controller, plot_controller)
+    controller = CLIController(context,inferential_controller, plot_controller)
     return controller

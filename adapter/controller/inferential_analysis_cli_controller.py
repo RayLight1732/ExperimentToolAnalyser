@@ -1,5 +1,7 @@
+from os import name
+from application.model import value_type
 from application.model.value_type import ValueType
-from adapter.utils import parse_value_type_str, parse_bool
+from adapter.parser import comparison_from_json, test_args_from_json, two_sample_test_option_from_json
 from typing import Callable
 from application.port.input.inferential_statistics_input_port import (
     InferentialStatisticsInputPort,
@@ -15,37 +17,27 @@ from adapter.presenter.inferential_result_presenter import (
     InferentialResultPresenter,
 )
 from adapter.presenter.progress_presenter import ProgressPresenter
+from bootstrap.context import AppContext
+from bootstrap.inferential_statistics_factory import InferentialUsecaseFactory
+from domain.analysis.inferential.options.two_sample_test_option import TwoSampleTestOption
+from domain.analysis.inferential.test_type import TestType
 from domain.repository.inferential_result_repository import InferentialResultRepository
+from infra.post_processor.holm_post_processor import HolmPostProcessor
 
 
 class InferentialStatisticsCLIController:
     def __init__(
         self,
-        repository: InferentialResultRepository,  # TODO どうにかする
-        usecase_factory: Callable[
-            [
-                ProgressLifeCycleOutputPort,
-                ProgressAdvanceOutputPort,
-                InferentialResultOutputPort,
-            ],
-            InferentialStatisticsInputPort,
-        ],
+        usecase_factory: InferentialUsecaseFactory # TODO I/Fにしたほうがいい
     ):
-        self.repository = repository
         self.usecase_factory = usecase_factory
 
-    def handle(self, input_line: str):
-        tokens = input_line.split()
-        value_type = parse_value_type_str(tokens[0])
-        filter = parse_bool(tokens[1])
-
-        file_name = value_type.name
-        if filter:
-            file_name += "_filtered"
-        progress_presenter = ProgressPresenter()
-        usecase = self.usecase_factory(
-            progress_presenter,
-            progress_presenter,
-            InferentialResultPresenter(file_name, self.repository),
-        )
-        usecase.execute(type=value_type, filter=filter)
+    def handle(self, context:AppContext,input_line: str):
+        test_type,value_type, required,file_name,option = test_args_from_json(input_line)
+        post_processor = HolmPostProcessor()#TODO
+        if test_type == TestType.WILCOXON_TEST:
+            two_sample_test_option = two_sample_test_option_from_json(option)
+            usecase = self.usecase_factory.create_wilcoxon_usecase(context,{post_processor},value_type,required,file_name)
+            usecase.execute(two_sample_test_option)
+        elif test_type == TestType.PAIRED_T_TEST:
+            raise NotImplementedError("t test is not implemented")

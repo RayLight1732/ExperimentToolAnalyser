@@ -4,15 +4,16 @@ from scipy.stats import ttest_rel
 import numpy as np
 
 from application.port.output.progress_output_port import ProgressAdvanceOutputPort
+from domain.analysis.inferential.options.two_sample_test_option import TwoSampleTestOption
 from domain.analysis.inferential.result.comparison import Comparison
 from domain.analysis.inferential.result.evidence import Evidence
 from domain.analysis.inferential.result.inferential_result import InferentialResult
 from domain.analysis.inferential.inferential_calculator import InferentialCalculator
+from domain.analysis.inferential.test_type import TestType
 from domain.value.grouped_value import GroupedValue
 from domain.value.condition import Condition
 
-class PairedTTestCalculator(InferentialCalculator):
-    METHOD = "paired_t"
+class PairedTTestCalculator(InferentialCalculator[TwoSampleTestOption]):
 
     def __init__(self, output_port: ProgressAdvanceOutputPort):
         self.output_port = output_port
@@ -46,5 +47,5 @@ class PairedTTestCalculator(InferentialCalculator):
             result[Comparison(c1, c2)] = Evidence(p_value=p)
 
         return InferentialResult(
-            method=PairedTTestCalculator.METHOD, comparisons=result
+            method=TestType.PAIRED_T_TEST, comparisons=result
         )
