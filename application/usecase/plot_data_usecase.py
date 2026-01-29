@@ -7,6 +7,7 @@ from application.model.value_type import ValueType
 from application.port.output.progress_output_port import ProgressLifeCycleOutputPort
 from application.model.inferential_analysis_step import InferentialAnalysisStep
 from application.service.collector.collector import Collector
+from domain.analysis.inferential.value_filter import ValueFilter
 from domain.value.grouped_value import GroupedValue
 from domain.value.subject import Subject
 from typing import Set
@@ -24,6 +25,7 @@ class PlotDataUseCase(PlotDataInputPort):
         required: Set[Condition],
         subject_repo: SubjectRepository,
         collector: Collector,
+        value_filters:List[ValueFilter],
         generator: GraphGenerator,
         progress_cycle_output_port: ProgressLifeCycleOutputPort,
         storage_output_port: GraphStorageOutputPort,
@@ -31,6 +33,7 @@ class PlotDataUseCase(PlotDataInputPort):
         self.required = required
         self.subject_repo = subject_repo
         self.collector = collector
+        self.value_filters = value_filters
         self.storage_output_port = storage_output_port
         self.progress_cycle_output_port = progress_cycle_output_port
         self.generator = generator
@@ -45,6 +48,7 @@ class PlotDataUseCase(PlotDataInputPort):
             grouped = self._collect(
                 subjects,
             )
+            grouped = self._apply_filters(grouped)
             self._save_fig(graph_title, grouped, option)
         except Exception as e:
             self.progress_cycle_output_port.on_error(e)
@@ -75,6 +79,11 @@ class PlotDataUseCase(PlotDataInputPort):
         self.progress_cycle_output_port.on_finished(
             InferentialAnalysisStep.COLLECT_VALUES
         )
+        return grouped
+    
+    def _apply_filters(self,grouped:GroupedValue)->GroupedValue:
+        for value_filter in self.value_filters:
+            grouped = value_filter.apply(grouped)
         return grouped
 
     def _save_fig(

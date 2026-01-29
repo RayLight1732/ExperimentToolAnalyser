@@ -1,6 +1,7 @@
 from application.model.inferential_analysis_step import InferentialAnalysisStep
 from typing import Any, List, Set
 from application.service.collector.collector import Collector
+from domain.analysis.inferential.value_filter import ValueFilter
 from domain.value.condition import Condition
 from domain.repository.subject_repository import SubjectRepository
 from domain.analysis.inferential.result.inferential_result import InferentialResult
@@ -35,6 +36,7 @@ class RunInferentialAnalysisUseCase(Generic[TOption],InferentialStatisticsInputP
         subject_repo: SubjectRepository,
         collector: Collector,
         calculator: InferentialCalculator[TOption],
+        value_filters:List[ValueFilter],
         post_processors: List[PostProcessor],
         progress_cycle_output_port: ProgressLifeCycleOutputPort,
         result_output_port: InferentialResultOutputPort,
@@ -43,6 +45,7 @@ class RunInferentialAnalysisUseCase(Generic[TOption],InferentialStatisticsInputP
         self.subject_repo = subject_repo
         self.collector = collector
         self.calculator = calculator
+        self.value_filters = value_filters
         self.post_processors = post_processors
         self.progress_cycle_output_port = progress_cycle_output_port
         self.inferentional_result_output_port = result_output_port
@@ -51,6 +54,7 @@ class RunInferentialAnalysisUseCase(Generic[TOption],InferentialStatisticsInputP
         try:
             subjects = self._filter_subjects_by_conditions()
             grouped = self._collect(subjects)
+            grouped = self._apply_filters(grouped)
             original = self._run_inferential_calculation(grouped,option)
             post_process_results = self._apply_post_processors(original)
 
@@ -88,6 +92,11 @@ class RunInferentialAnalysisUseCase(Generic[TOption],InferentialStatisticsInputP
         self.progress_cycle_output_port.on_finished(
             InferentialAnalysisStep.COLLECT_VALUES
         )
+        return grouped
+    
+    def _apply_filters(self,grouped:GroupedValue)->GroupedValue:
+        for value_filter in self.value_filters:
+            grouped = value_filter.apply(grouped)
         return grouped
 
     def _run_inferential_calculation(self, grouped: GroupedValue,option:TOption) -> InferentialResult:

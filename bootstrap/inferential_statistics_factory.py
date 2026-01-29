@@ -8,14 +8,16 @@ from application.usecase.run_inferential_analysis_usecase import RunInferentialA
 from bootstrap.context import AppContext
 from domain.analysis.inferential.options.two_sample_test_option import TwoSampleTestOption
 from domain.analysis.inferential.post_processor import PostProcessor
+from domain.analysis.inferential.value_filter import ValueFilter
 from domain.repository.inferential_result_repository import InferentialResultRepository
 from domain.value.condition import Condition
 from infra.calculator.inferential.calculator_factory import CalculatorFactory #TODO portにする
 from typing import List, Set
 
 class InferentialUsecaseFactory:
-    def __init__(self,collector_factory:CollectorFactory,calculator_factory:CalculatorFactory):
+    def __init__(self,collector_factory:CollectorFactory,value_filters:List[ValueFilter],calculator_factory:CalculatorFactory):
         self.collector_factory = collector_factory
+        self.value_filters = value_filters
         self.calculator_factory = calculator_factory
 
     def create_wilcoxon_usecase(
@@ -37,6 +39,7 @@ class InferentialUsecaseFactory:
             subject_repo=context.subject_repository,
             collector=self.collector_factory.get(value_type),
             calculator=self.calculator_factory.create_wilcoxon_calculator(progress_presenter),
+            value_filters=self.value_filters,
             post_processors=post_processors,
             progress_cycle_output_port=progress_presenter,
             result_output_port=result_presenter,

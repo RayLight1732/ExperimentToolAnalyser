@@ -40,21 +40,23 @@ from application.usecase.plot_data_usecase import PlotDataUseCase
 from infra.graph.spaghetti_plot_generator import SpaghettiPlotGenerator
 from adapter.controller.plot_cli_controller import PlotCLIController
 from infra.graph.box_plot_generator import BoxPlotGenerator
+from infra.value_filter.iqr_filter import IQRFilter
 
 
 
 def new_cli_controller(config: Config):
     context = AppContext(config)
     progress_presenter = ProgressPresenter()
+    value_filters = [IQRFilter(config.iqr_factor)]
     collector_factory = new_collector_factory(context,progress_presenter)
     calculator_factory = CalculatorFactory()
     inferential_controller = InferentialStatisticsCLIController(
-        InferentialUsecaseFactory(collector_factory,    calculator_factory)
+        InferentialUsecaseFactory(collector_factory,value_filters,calculator_factory)
     )
 
     generators = [SpaghettiPlotGenerator(),BoxPlotGenerator()]
     plot_controller = PlotCLIController(
-        PlotDataUsecaseFactory(context,collector_factory,generators)
+        PlotDataUsecaseFactory(context,collector_factory,value_filters,generators)
     )
     controller = CLIController(context,inferential_controller, plot_controller)
     return controller
