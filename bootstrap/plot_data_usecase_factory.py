@@ -11,6 +11,7 @@ from application.usecase.run_inferential_analysis_usecase import RunInferentialA
 from bootstrap.context import AppContext
 from domain.analysis.inferential.options.two_sample_test_option import TwoSampleTestOption
 from domain.analysis.inferential.post_processor import PostProcessor
+from domain.analysis.inferential.value_filter import ValueFilter
 from domain.repository.inferential_result_repository import InferentialResultRepository
 from domain.value.condition import Condition
 from infra.calculator.inferential.calculator_factory import CalculatorFactory #TODO portにする
@@ -19,8 +20,9 @@ from typing import Dict, List, Set
 from infra.strage.file_graph_storage import FileGraphStorage
 
 class PlotDataUsecaseFactory:
-    def __init__(self,context:AppContext,collector_factory:CollectorFactory,generators:List[GraphGenerator]):
+    def __init__(self,context:AppContext,collector_factory:CollectorFactory,value_filters:List[ValueFilter],generators:List[GraphGenerator]):
         self.context = context
+        self.value_filters = value_filters
         self.collector_factory = collector_factory
         self.generators: Dict[GraphType, GraphGenerator] = {
             gen.supported_type(): gen for gen in generators
@@ -39,6 +41,7 @@ class PlotDataUsecaseFactory:
             required=required,
             subject_repo=self.context.subject_repository,
             collector=self.collector_factory.get(value_type),
+            value_filters=self.value_filters,
             generator= self.generators[graph_type],
             progress_cycle_output_port=progress_presenter,
             storage_output_port=storage_output_port,
