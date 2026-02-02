@@ -37,7 +37,9 @@ class InferentialStatisticsCLIController:
         post_processor = HolmPostProcessor()#TODO
         if test_type == TestType.WILCOXON_TEST:
             two_sample_test_option = two_sample_test_option_from_json(option)
-            usecase = self.usecase_factory.create_wilcoxon_usecase(context,{post_processor},value_type,required,file_name)
+            usecase = self.usecase_factory.create_wilcoxon_usecase(context,[post_processor],value_type,required,file_name)
             usecase.execute(two_sample_test_option)
         elif test_type == TestType.PAIRED_T_TEST:
-            raise NotImplementedError("t test is not implemented")
+            two_sample_test_option = two_sample_test_option_from_json(option)
+            usecase = self.usecase_factory.create_paired_t_usecase(context,[post_processor],value_type,required,file_name)
+            usecase.execute(two_sample_test_option)

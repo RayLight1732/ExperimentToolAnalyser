@@ -44,3 +44,28 @@ class InferentialUsecaseFactory:
             progress_cycle_output_port=progress_presenter,
             result_output_port=result_presenter,
         )
+    
+    def create_paired_t_usecase(
+        self,
+        context:AppContext,
+        post_processors:List[PostProcessor],
+        value_type:ValueType,
+        required:Set[Condition],
+        file_name:str
+    ) -> InferentialStatisticsInputPort[TwoSampleTestOption]:
+
+        progress_presenter = ProgressPresenter()
+        result_presenter = InferentialResultPresenter(
+            file_name, context.inferential_result_repository
+        )
+
+        return RunInferentialAnalysisUseCase(
+            required=required,
+            subject_repo=context.subject_repository,
+            collector=self.collector_factory.get(value_type),
+            calculator=self.calculator_factory.create_paired_t_test_calculator(progress_presenter),
+            value_filters=self.value_filters,
+            post_processors=post_processors,
+            progress_cycle_output_port=progress_presenter,
+            result_output_port=result_presenter,
+        )
