@@ -10,6 +10,8 @@ import japanize_matplotlib
 
 
 class BoxPlotGenerator(GraphGenerator):
+    def __init__(self,iqr_factor:float):
+        self.iqr_factor = iqr_factor
 
     def generate(self, title: str, data: GroupedValue, option: GraphOption) -> bytes:
         assert option is not None
@@ -42,6 +44,7 @@ class BoxPlotGenerator(GraphGenerator):
         plt.boxplot(
             box_values,
             labels=x_labels,
+            whis=self.iqr_factor,
             showfliers=True,   # 外れ値を表示
             patch_artist=True # 箱を塗りつぶせるように
         )

@@ -54,7 +54,7 @@ def new_cli_controller(config: Config):
         InferentialUsecaseFactory(collector_factory,value_filters,calculator_factory)
     )
 
-    generators = [SpaghettiPlotGenerator(),BoxPlotGenerator()]
+    generators = [SpaghettiPlotGenerator(),BoxPlotGenerator(config.iqr_factor)]
     plot_controller = PlotCLIController(
         PlotDataUsecaseFactory(context,collector_factory,value_filters,generators)
     )
