@@ -135,7 +135,7 @@ def run_5_conditions(controller: CLIController):
 def run_3_conditions(controller: CLIController):
     value_type = ValueType.PEAK_FMS
     test_type = TestType.PAIRED_T_TEST
-    graph_type = GraphType.BOX_PLOT
+    graph_type = GraphType.ERROR_BAR
     required = {
         Condition(CoolingMode.ALWAYS_STRONG,Position.CAROTID),
         Condition(CoolingMode.ALWAYS, Position.CAROTID),
@@ -198,7 +198,6 @@ def main(config_path):
     config = load_config(config_path)
     controller = new_cli_controller(config)
     run_3_conditions(controller)
-    # run_all(controller, True)
 
 
 if __name__ == "__main__":

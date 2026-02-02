@@ -6,6 +6,7 @@ class GraphType(Enum):
 
     SPAGHETTI = "spaghetti"
     BOX_PLOT = "box_plot"
+    ERROR_BAR ="error_bar"
 
     def __str__(self):
         return self.value

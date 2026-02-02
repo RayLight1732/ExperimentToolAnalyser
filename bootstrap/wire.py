@@ -26,6 +26,7 @@ from infra.calculator.inferential import calculator_factory
 from infra.calculator.inferential.calculator_factory import CalculatorFactory
 from infra.calculator.inferential.paired_t_test_calculator import PairedTTestCalculator
 from infra.calculator.inferential.wilcoxon_calculator import WilcoxonCalculator
+from infra.graph.error_bar_plot_generator import ErrorBarPlotGenerator
 from infra.post_processor.holm_post_processor import HolmPostProcessor
 from domain.analysis.inferential.post_processor import PostProcessor
 from adapter.controller.cli_controller import CLIController
@@ -54,7 +55,7 @@ def new_cli_controller(config: Config):
         InferentialUsecaseFactory(collector_factory,value_filters,calculator_factory)
     )
 
-    generators = [SpaghettiPlotGenerator(),BoxPlotGenerator(config.iqr_factor)]
+    generators = [SpaghettiPlotGenerator(),BoxPlotGenerator(config.iqr_factor),ErrorBarPlotGenerator()]
     plot_controller = PlotCLIController(
         PlotDataUsecaseFactory(context,collector_factory,value_filters,generators)
     )
