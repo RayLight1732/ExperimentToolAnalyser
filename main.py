@@ -84,7 +84,7 @@ def graph_args_to_json(
     return json.dumps(result_dict, ensure_ascii=False, indent=2)
 
 
-def run_all(controller: CLIController, filter):
+def run_5_conditions(controller: CLIController):
     value_type = ValueType.PEAK_FMS
     test_type = TestType.WILCOXON_TEST
     graph_type = GraphType.BOX_PLOT
@@ -93,6 +93,53 @@ def run_all(controller: CLIController, filter):
         Condition(CoolingMode.ALWAYS, Position.CAROTID),
         Condition(CoolingMode.PERIODIC, Position.CAROTID),
         Condition(CoolingMode.SICK_SCENE_ONLY, Position.CAROTID),
+        Condition(CoolingMode.NONE),
+    }
+    option = TwoSampleTestOption([])
+    size = len(required) if len(option.comparisons) == 0 else len(option.comparisons)
+
+    graph_option = GraphOption(
+        x_label="組み合わせ",
+        y_label=value_type.name,
+    )
+    title = f"Peak FMS ({size} conditions)"
+    controller.handle(
+         f"inferential {test_args_to_json(title,value_type,test_type,required,two_sample_option_to_dict(option))}"
+    )
+    controller.handle(
+        f"plot {graph_args_to_json(title,value_type,graph_type,required,graph_option)}"
+    )
+
+    value_type = ValueType.SSQ_TOTAL
+    title = f"Delta SSQ ({size} conditions)"
+    controller.handle(
+         f"inferential {test_args_to_json(title,value_type,test_type,required,two_sample_option_to_dict(option))}"
+    )
+
+    controller.handle(
+        f"plot {graph_args_to_json(title,value_type,graph_type,required,graph_option)}"
+    )
+
+    value_type = ValueType.AVERAGE_COP_SPEED
+    
+    title = f"Average CoP Speed ({size} conditions)"
+    controller.handle(
+         f"inferential {test_args_to_json(title,value_type,test_type,required,two_sample_option_to_dict(option))}"
+    )
+
+    controller.handle(
+        f"plot {graph_args_to_json(title,value_type,graph_type,required,graph_option)}"
+    )
+
+
+def run_3_conditions(controller: CLIController):
+    value_type = ValueType.PEAK_FMS
+    test_type = TestType.PAIRED_T_TEST
+    graph_type = GraphType.BOX_PLOT
+    required = {
+        Condition(CoolingMode.ALWAYS_STRONG,Position.CAROTID),
+        Condition(CoolingMode.ALWAYS, Position.CAROTID),
+        Condition(CoolingMode.PERIODIC, Position.CAROTID),
         Condition(CoolingMode.NONE),
     }
     option = TwoSampleTestOption(
@@ -111,7 +158,6 @@ def run_all(controller: CLIController, filter):
             ),
         ]
     )
-    option = TwoSampleTestOption([])
     size = len(required) if len(option.comparisons) == 0 else len(option.comparisons)
 
     graph_option = GraphOption(
@@ -151,7 +197,7 @@ def run_all(controller: CLIController, filter):
 def main(config_path):
     config = load_config(config_path)
     controller = new_cli_controller(config)
-    run_all(controller, False)
+    run_3_conditions(controller)
     # run_all(controller, True)
 
 
