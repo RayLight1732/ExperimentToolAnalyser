@@ -42,13 +42,14 @@ from infra.graph.spaghetti_plot_generator import SpaghettiPlotGenerator
 from adapter.controller.plot_cli_controller import PlotCLIController
 from infra.graph.box_plot_generator import BoxPlotGenerator
 from infra.value_filter.iqr_filter import IQRFilter
+from infra.value_filter.name_filter import NameFilter
 
 
 
 def new_cli_controller(config: Config):
     context = AppContext(config)
     progress_presenter = ProgressPresenter()
-    value_filters = [IQRFilter(config.iqr_factor)]
+    value_filters = [NameFilter(config.sensored),IQRFilter(config.iqr_factor)]
     collector_factory = new_collector_factory(context,progress_presenter)
     calculator_factory = CalculatorFactory()
     inferential_controller = InferentialStatisticsCLIController(

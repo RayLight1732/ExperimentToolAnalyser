@@ -11,6 +11,7 @@ class Config:
     working_dir: str
     save_dir: str
     iqr_factor:float
+    sensored:List[str]
 
 def load_config(path: Optional[str] = None) -> Config:
     path = path or ".config.yml"
@@ -29,8 +30,9 @@ def load_config(path: Optional[str] = None) -> Config:
         working_dir = data["working_dir"]
         save_dir = data["save_dir"]
         iqr_factor = float(data["IQR_factor"])
+        sensored = data.get("sensored",[])
         
-        return Config(working_dir=working_dir, save_dir=save_dir,iqr_factor=iqr_factor)
+        return Config(working_dir=working_dir, save_dir=save_dir,iqr_factor=iqr_factor,sensored=sensored)
     
     except KeyError as e:
         raise ValueError(f"Missing required config key: {e}") from e
