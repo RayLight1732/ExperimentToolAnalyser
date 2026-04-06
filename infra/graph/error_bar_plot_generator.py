@@ -13,7 +13,6 @@ class ErrorBarPlotGenerator(GraphGenerator):
 
     def generate(self, title: str, data: GroupedValue, option: GraphOption) -> bytes:
         assert option is not None
-
         # condition の並び順を安定させる
         conditions = sorted(data.value.keys(), key=lambda c: str(c))
 
@@ -54,10 +53,14 @@ class ErrorBarPlotGenerator(GraphGenerator):
             capsize=5,
             error_kw=dict(ecolor='black', lw=1.5)
         )
-        plt.ylim(0, None)
+        max_y = max(m + s for m, s in zip(means, sems))
+        if option.crown_ratio != 0:
+            plt.ylim(0, max_y * (1 + option.crown_ratio))
+        else:
+            plt.ylim(bottom=0)
         plt.xlabel(option.x_label)
         plt.ylabel(option.y_label)
-        plt.title(title)
+        #plt.title(title)
 
         ax = plt.gca()
         ax.text(
@@ -73,7 +76,7 @@ class ErrorBarPlotGenerator(GraphGenerator):
 
         buf = io.BytesIO()
         plt.tight_layout()
-        plt.savefig(buf, format="png")
+        plt.savefig(buf, format="svg")
         plt.close()
         buf.seek(0)
         return buf.read()

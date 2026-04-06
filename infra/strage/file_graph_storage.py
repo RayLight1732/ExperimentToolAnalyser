@@ -22,9 +22,9 @@ class FileGraphStorage(GraphStorageOutputPort):
             保存されたファイルのパス
         """
 
-        # 拡張子が無ければ .png を付ける
-        if not name.lower().endswith(".png"):
-            name = f"{name}.png"
+        # 拡張子が無ければ .svg を付ける
+        if not name.lower().endswith(".svg"):
+            name = f"{name}.svg"
 
         path = self.working_dir / name
 

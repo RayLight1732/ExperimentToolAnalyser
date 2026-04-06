@@ -36,7 +36,7 @@ class SpaghettiPlotGenerator(GraphGenerator):
 
         plt.xlabel(option.x_label)
         plt.ylabel(option.y_label)
-        plt.title(title)
+        #plt.title(title)
         ax = plt.gca()
         ax.text(
             0.98,

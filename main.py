@@ -61,6 +61,7 @@ def graph_option_to_dict(option:GraphOption):
     result_dict["color_theme"] = option.color_theme
     result_dict["width"] = option.width
     result_dict["height"] = option.height
+    result_dict["crown_ratio"] = option.crown_ratio
     #TODO custom option
     return result_dict
     
@@ -86,8 +87,8 @@ def graph_args_to_json(
 
 def run_5_conditions(controller: CLIController):
     value_type = ValueType.PEAK_FMS
-    test_type = TestType.WILCOXON_TEST
-    graph_type = GraphType.BOX_PLOT
+    test_type = TestType.PAIRED_T_TEST
+    graph_type = GraphType.ERROR_BAR
     required = {
         Condition(CoolingMode.ALWAYS_STRONG,Position.CAROTID),
         Condition(CoolingMode.ALWAYS, Position.CAROTID),
@@ -99,10 +100,10 @@ def run_5_conditions(controller: CLIController):
     size = len(required) if len(option.comparisons) == 0 else len(option.comparisons)
 
     graph_option = GraphOption(
-        x_label="組み合わせ",
+        x_label="条件",
         y_label=value_type.name,
     )
-    title = f"Peak FMS ({size} conditions)"
+    title = f"PeakFMS{size}"
     controller.handle(
          f"inferential {test_args_to_json(title,value_type,test_type,required,two_sample_option_to_dict(option))}"
     )
@@ -111,7 +112,11 @@ def run_5_conditions(controller: CLIController):
     )
 
     value_type = ValueType.SSQ_TOTAL
-    title = f"Delta SSQ ({size} conditions)"
+    graph_option = GraphOption(
+        x_label="条件",
+        y_label=value_type.name,
+    )
+    title = f"DeltaSSQ{size}"
     controller.handle(
          f"inferential {test_args_to_json(title,value_type,test_type,required,two_sample_option_to_dict(option))}"
     )
@@ -121,8 +126,11 @@ def run_5_conditions(controller: CLIController):
     )
 
     value_type = ValueType.AVERAGE_COP_SPEED
-    
-    title = f"Average CoP Speed ({size} conditions)"
+    graph_option = GraphOption(
+        x_label="条件",
+        y_label=value_type.name,
+    )
+    title = f"AverageCoPSpeed{size}"
     controller.handle(
          f"inferential {test_args_to_json(title,value_type,test_type,required,two_sample_option_to_dict(option))}"
     )
@@ -161,10 +169,11 @@ def run_3_conditions(controller: CLIController):
     size = len(required) if len(option.comparisons) == 0 else len(option.comparisons)
 
     graph_option = GraphOption(
-        x_label="組み合わせ",
+        x_label="条件",
         y_label=value_type.name,
+        crown_ratio=0.3,
     )
-    title = f"Peak FMS ({size} conditions)"
+    title = f"PeakFMS{size}"
     controller.handle(
          f"inferential {test_args_to_json(title,value_type,test_type,required,two_sample_option_to_dict(option))}"
     )
@@ -173,7 +182,11 @@ def run_3_conditions(controller: CLIController):
     )
 
     value_type = ValueType.SSQ_TOTAL
-    title = f"Delta SSQ ({size} conditions)"
+    graph_option = GraphOption(
+        x_label="条件",
+        y_label=value_type.name,
+    )
+    title = f"DeltaSSQ{size}"
     controller.handle(
          f"inferential {test_args_to_json(title,value_type,test_type,required,two_sample_option_to_dict(option))}"
     )
@@ -183,8 +196,11 @@ def run_3_conditions(controller: CLIController):
     )
 
     value_type = ValueType.AVERAGE_COP_SPEED
-    
-    title = f"Average CoP Speed ({size} conditions)"
+    graph_option = GraphOption(
+        x_label="条件",
+        y_label=value_type.name,
+    )
+    title = f"AverageCoPSpeed{size}"
     controller.handle(
          f"inferential {test_args_to_json(title,value_type,test_type,required,two_sample_option_to_dict(option))}"
     )
@@ -197,7 +213,7 @@ def run_3_conditions(controller: CLIController):
 def main(config_path):
     config = load_config(config_path)
     controller = new_cli_controller(config)
-    run_3_conditions(controller)
+    run_5_conditions(controller)
 
 
 if __name__ == "__main__":

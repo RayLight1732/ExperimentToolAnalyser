@@ -96,8 +96,9 @@ def graph_option_from_json(data: dict)->GraphOption:
     color_theme = data.get("color_theme","default")
     width = data.get("width",800)
     height = data.get("height",600)
+    crown_ratio = data.get("crown_ratio",0)
     # TODO custom option
-    return GraphOption(width,height,x_label,y_label,color_theme)
+    return GraphOption(width,height,x_label,y_label,color_theme,crown_ratio)
     
 
 

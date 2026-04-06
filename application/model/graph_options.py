@@ -11,4 +11,5 @@ class GraphOption:
     x_label: str = ""
     y_label: str = ""
     color_theme: str = "default"
+    crown_ratio:float = 0
     custom_options: Dict[str, Any] = field(default_factory=dict)
